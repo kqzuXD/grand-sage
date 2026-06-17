@@ -1117,11 +1117,11 @@ async function loadFromSupabase(){
   }
 }
 
-// ─── Supabase へ保存（デバウンス3秒）───────────────────
+// ─── Supabase へ保存（デバウンス1秒、体感は即時）────────
 function scheduleSyncToSupabase(){
   clearTimeout(syncTimer);
-  syncTimer = setTimeout(syncToSupabase, 1000);
-  setSyncStatus('syncing', '保存中...');
+  setSyncStatus('ok', '同期済み'); // localStorageに保存した瞬間に表示
+  syncTimer = setTimeout(syncToSupabase, 1000); // Supabaseへは裏で送る
 }
 
 async function syncToSupabase(){
