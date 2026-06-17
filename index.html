@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grand Sage Journey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0C0F;color:#F0E6C0;font-family:'Inter','Segoe UI',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:#0A0C0F}::-webkit-scrollbar-thumb{background:#2A3545;border-radius:2px}
+input,textarea,select{outline:none;font-family:inherit}
+input:focus,textarea:focus,select:focus{border-color:#4A7C6F!important;box-shadow:0 0 0 2px rgba(74,124,111,0.15)}
+button:active{transform:scale(0.97)}
+select{appearance:none;-webkit-appearance:none}
+#topbar{background:#0D0F13;border-bottom:1px solid #1E2530;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{font-family:'Cinzel',serif;font-size:15px;letter-spacing:.12em;color:#9B7E4A;font-weight:700}
+.lvbadge{background:#1E2530;border:1px solid #4A7C6F;border-radius:6px;padding:4px 12px;font-size:12px;color:#4A7C6F;font-family:'JetBrains Mono',monospace;font-weight:600}
+#nav{display:flex;border-bottom:1px solid #1E2530;background:#0D0F13;overflow-x:auto;padding:0 16px}
+.navbtn{padding:12px 16px;background:none;border:none;border-bottom:2px solid transparent;color:#7C6F52;cursor:pointer;font-size:12px;letter-spacing:.08em;font-family:'Cinzel',serif;font-weight:400;white-space:nowrap;transition:all .15s}
+.navbtn.active{border-bottom:2px solid #9B7E4A;color:#F0E6C0;font-weight:700}
+#main{padding:24px 16px;max-width:720px;margin:0 auto;width:100%}
+.tab{display:none}.tab.active{display:block}
+.card{background:#1E2530;border:1px solid #2A3545;border-radius:12px;padding:20px;margin-bottom:16px}
+.card-gold{border-color:#9B7E4A33!important;background:linear-gradient(135deg,#1E2530 0%,#151A22 100%)}
+.cardtitle{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;color:#7C6F52;text-transform:uppercase;margin-bottom:12px}
+.xpbar{height:8px;background:#0A0C0F;border-radius:4px;overflow:hidden;border:1px solid #2A3545}
+.xpfill{height:100%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A);border-radius:4px;transition:width .6s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 12px rgba(155,126,74,.5)}
+.xpmini{height:4px;background:#0A0C0F;border-radius:2px;margin-bottom:12px}
+.xpminifill{height:100%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A);border-radius:2px;transition:width .4s ease;box-shadow:0 0 8px rgba(155,126,74,.4)}
+.xprow{display:flex;justify-content:space-between;margin-top:6px}
+.xplabel{font-size:11px;color:#7C6F52;font-family:'JetBrains Mono',monospace}
+.inp{width:100%;background:#0A0C0F;border:1px solid #2A3545;border-radius:8px;color:#F0E6C0;padding:10px 14px;font-size:14px;display:block;margin-bottom:10px;transition:border-color .2s}
+.ta{width:100%;background:#0A0C0F;border:1px solid #2A3545;border-radius:8px;color:#F0E6C0;padding:10px 14px;font-size:14px;resize:vertical;min-height:80px;display:block;margin-bottom:10px;font-family:inherit;transition:border-color .2s}
+.ta.required-err{border-color:#8B4A4A!important}
+.charcnt{font-size:11px;display:flex;justify-content:space-between;margin-bottom:4px}
+.charcnt.ok{color:#4A7C6F}.charcnt.ng{color:#7C6F52}
+.minixpbar{height:3px;background:#0A0C0F;border-radius:2px;margin-bottom:6px}
+.minixpfill{height:100%;border-radius:2px;transition:width .3s ease}
+.btn{border:none;border-radius:8px;color:#F0E6C0;padding:10px 20px;font-size:13px;cursor:pointer;font-family:'Cinzel',serif;letter-spacing:.08em;font-weight:600;transition:opacity .15s,transform .1s}
+.btn-primary{background:linear-gradient(135deg,#4A7C6F,#9B7E4A)}
+.btn-gold{background:linear-gradient(135deg,#9B7E4A,#C4A35A)}
+.btn-secondary{background:#2A3545}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.quest{display:flex;align-items:center;gap:12px;padding:12px;background:#0A0C0F;border:1px solid #2A3545;border-radius:8px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.quest.done{background:rgba(74,124,111,.08);border-color:#4A7C6F}
+.qcheck{width:20px;height:20px;border-radius:50%;border:2px solid #2A3545;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s;font-size:11px;color:#F0E6C0}
+.qcheck.done{border-color:#4A7C6F;background:#4A7C6F}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono',monospace;margin-right:4px}
+.statgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.statcard{background:#1E2530;border:1px solid #2A3545;border-radius:12px;padding:14px;text-align:center}
+.statnum{font-family:'JetBrains Mono',monospace;font-size:18px;color:#F0E6C0;font-weight:700}
+.statlabel{font-size:10px;color:#7C6F52;margin-top:2px}
+.bookcard{background:#1E2530;border:1px solid #2A3545;border-radius:12px;padding:20px;margin-bottom:12px}
+.bookcard.done{border-color:#4A7C6F44}
+.bookrow{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.bookpageinput{display:flex;gap:8px;margin-top:8px}
+.bookpageinput .inp{margin-bottom:0;flex:1}
+/* カテゴリバッジ */
+.cat-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono',monospace;margin-bottom:8px}
+.techitem{background:#1E2530;border:1px solid #2A3545;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:16px}
+.techicon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+/* Empathy - 入力フォーム付き */
+.actitem{background:#1E2530;border:1px solid #2A3545;border-radius:12px;padding:20px;margin-bottom:12px}
+.actrow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.actrow-top{display:flex;justify-content:space-between;align-items:center}
+.dotbar{display:flex;gap:6px;margin-top:12px}
+.dot{height:4px;flex:1;border-radius:2px;background:#2A3545;transition:background .3s}
+.dot.fill{background:#9B7E4A}
+.emp-form{margin-top:14px;border-top:1px solid #2A3545;padding-top:14px}
+.emp-form-label{font-size:11px;color:#7C6F52;margin-bottom:6px}
+.ring-wrap{position:relative;width:100px;height:100px;margin:0 auto 24px}
+.gsbar{margin-bottom:12px}
+.gsrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.titletable{width:100%;border-collapse:collapse}
+.titletable th,.titletable td{padding:10px 14px;text-align:left;border-bottom:1px solid #2A3545;font-size:13px}
+.titletable th{font-family:'Cinzel',serif;font-size:10px;letter-spacing:.1em;color:#7C6F52;text-transform:uppercase;font-weight:400}
+.titletable tr:last-child td{border-bottom:none}
+.lv-pill{display:inline-block;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600}
+#lvoverlay{display:none;position:fixed;inset:0;background:rgba(155,126,74,.15);align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(4px)}
+#lvoverlay.show{display:flex}
+.lvbox{background:#0D0F13;border:2px solid #9B7E4A;border-radius:16px;padding:40px 60px;text-align:center;box-shadow:0 0 60px rgba(155,126,74,.4)}
+.thlog{border-bottom:1px solid #2A3545;padding-bottom:12px;margin-bottom:12px}
+.thlog:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.throw{display:flex;justify-content:space-between;margin-bottom:4px}
+.empty{text-align:center;padding:40px 20px;color:#7C6F52}
+.emptyi{font-size:32px;margin-bottom:8px}
+.emptytext{font-family:'Cinzel',serif;font-size:13px}
+.conditem{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.condcirc{width:16px;height:16px;border-radius:50%;background:#2A3545;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:#F0E6C0}
+.condcirc.ok{background:#4A7C6F}
+/* ── CALENDAR ── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.cal-nav{background:none;border:1px solid #2A3545;border-radius:6px;color:#F0E6C0;padding:6px 12px;cursor:pointer;font-size:14px;transition:border-color .2s}
+.cal-nav:hover{border-color:#4A7C6F}
+.cal-month{font-family:'Cinzel',serif;font-size:16px;letter-spacing:.1em;color:#F0E6C0}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-dow{text-align:center;font-size:10px;color:#7C6F52;font-family:'Cinzel',serif;letter-spacing:.05em;padding:4px 0}
+.cal-day{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:all .15s;position:relative;border:1px solid transparent;gap:2px}
+.cal-day.empty{cursor:default}
+.cal-day.has-data{background:#1E2530;border-color:#2A3545}
+.cal-day.has-data:hover{border-color:#4A7C6F}
+.cal-day.today{border-color:#9B7E4A!important;background:#1E2530}
+.cal-day.selected{border-color:#4A7C6F;background:#4A7C6F22}
+.cal-day-num{font-size:12px;line-height:1}
+.cal-dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;max-width:28px}
+.cal-dot{width:4px;height:4px;border-radius:50%}
+/* 日別詳細パネル */
+.day-detail{background:#1E2530;border:1px solid #2A3545;border-radius:12px;padding:20px;margin-top:16px}
+.day-detail-title{font-family:'Cinzel',serif;font-size:13px;color:#9B7E4A;margin-bottom:14px;letter-spacing:.08em}
+.detail-section{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #2A3545}
+.detail-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.detail-section-label{font-size:10px;color:#7C6F52;letter-spacing:.12em;font-family:'Cinzel',serif;text-transform:uppercase;margin-bottom:8px}
+.detail-item{font-size:13px;color:#F0E6C0;line-height:1.6;margin-bottom:4px}
+.detail-item:last-child{margin-bottom:0}
+.detail-xp{font-family:'JetBrains Mono',monospace;font-size:11px;color:#9B7E4A}
+@media(max-width:480px){
+  .statgrid{grid-template-columns:1fr 1fr}
+  .lvbox{padding:32px 40px}
+  #main{padding:16px 12px}
+  .cal-day{font-size:11px}
+}
+
+/* ── AUTH ── */
+#auth-overlay{position:fixed;inset:0;background:#0A0C0F;z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px}
+#auth-overlay.hidden{display:none}
+.auth-box{background:#1E2530;border:1px solid #2A3545;border-radius:16px;padding:40px 32px;width:100%;max-width:380px}
+.auth-logo{font-family:'Cinzel',serif;font-size:16px;letter-spacing:.15em;color:#9B7E4A;font-weight:700;text-align:center;margin-bottom:8px}
+.auth-sub{font-size:12px;color:#7C6F52;text-align:center;margin-bottom:28px;letter-spacing:.05em}
+.auth-label{font-size:11px;color:#7C6F52;margin-bottom:6px;display:block;letter-spacing:.08em}
+.auth-err{font-size:12px;color:#8B4A4A;text-align:center;margin-top:12px;min-height:18px}
+.auth-toggle{font-size:12px;color:#7C6F52;text-align:center;margin-top:16px;cursor:pointer}
+.auth-toggle span{color:#4A7C6F;text-decoration:underline;cursor:pointer}
+/* 同期インジケーター */
+#sync-indicator{font-size:11px;font-family:'JetBrains Mono',monospace;color:#7C6F52;display:flex;align-items:center;gap:6px}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#2A3545;flex-shrink:0;transition:background .3s}
+.sync-dot.syncing{background:#9B7E4A;animation:pulse .8s infinite}
+.sync-dot.ok{background:#4A7C6F}
+.sync-dot.err{background:#8B4A4A}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+</head>
+<body>
+
+<div id="auth-overlay">
+  <div class="auth-box">
+    <div class="auth-logo">✦ GRAND SAGE JOURNEY</div>
+    <div class="auth-sub" id="auth-mode-label">サインイン</div>
+    <label class="auth-label">メールアドレス</label>
+    <input class="inp" id="auth-email" type="email" placeholder="your@email.com" autocomplete="email">
+    <label class="auth-label">パスワード</label>
+    <input class="inp" id="auth-password" type="password" placeholder="••••••••" autocomplete="current-password">
+    <button class="btn btn-gold" style="width:100%;margin-top:4px" id="auth-submit-btn" onclick="authSubmit()">サインイン</button>
+    <div class="auth-err" id="auth-err"></div>
+    <div class="auth-toggle" id="auth-toggle-text">アカウントがない？ <span onclick="toggleAuthMode()">新規登録</span></div>
+  </div>
+</div>
+
+<div id="lvoverlay">
+  <div class="lvbox">
+    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.2em;color:#7C6F52;margin-bottom:12px">LEVEL UP</div>
+    <div id="lvnum" style="font-family:'Cinzel',serif;font-size:64px;font-weight:700;color:#9B7E4A;line-height:1">1</div>
+    <div id="lvtitle" style="font-family:'Cinzel',serif;font-size:16px;color:#F0E6C0;margin-top:12px">Apprentice</div>
+  </div>
+</div>
+
+<div id="topbar">
+  <div class="logo">✦ GRAND SAGE JOURNEY</div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div id="sync-indicator"><div class="sync-dot" id="sync-dot"></div><span id="sync-text">--</span></div>
+    <div class="lvbadge" id="topbadge">Lv 1 · 0 XP</div>
+    <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px" onclick="signOut()">logout</button>
+  </div>
+</div>
+
+<div id="nav">
+  <button class="navbtn active" onclick="switchTab('home')">HOME</button>
+  <button class="navbtn" onclick="switchTab('books')">BOOKS</button>
+  <button class="navbtn" onclick="switchTab('thought')">THOUGHT</button>
+  <button class="navbtn" onclick="switchTab('tech')">TECH</button>
+  <button class="navbtn" onclick="switchTab('empathy')">EMPATHY</button>
+  <button class="navbtn" onclick="switchTab('dignity')">DIGNITY</button>
+  <button class="navbtn" onclick="switchTab('calendar')">CALENDAR</button>
+  <button class="navbtn" onclick="switchTab('grand')">GRAND SAGE</button>
+</div>
+
+<div id="main">
+
+<!-- HOME -->
+<div id="tab-home" class="tab active">
+  <div class="card card-gold">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;color:#7C6F52;margin-bottom:4px">LEVEL</div>
+        <div id="h-level" style="font-family:'Cinzel',serif;font-size:48px;font-weight:700;color:#F0E6C0;line-height:1">1</div>
+        <div id="h-title" style="font-family:'Cinzel',serif;font-size:14px;color:#9B7E4A;margin-top:6px;letter-spacing:.1em">Apprentice</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:.15em;color:#7C6F52;margin-bottom:4px">WISDOM</div>
+        <div id="h-wisdom" style="font-family:'JetBrains Mono',monospace;font-size:32px;color:#4A7C6F;font-weight:700">0</div>
+        <div id="h-streak" style="font-size:11px;color:#9B7E4A;margin-top:4px;display:none"></div>
+      </div>
+    </div>
+    <div style="margin-top:20px">
+      <div class="xpbar"><div class="xpfill" id="h-xpfill" style="width:0%"></div></div>
+      <div class="xprow">
+        <span class="xplabel" id="h-xptext">XP 0 / 20</span>
+        <span class="xplabel" id="h-xpnext" style="color:#4A7C6F">次のLvまで 20 XP</span>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="cardtitle">📋 Daily Quest</div>
+    <div class="quest" id="dq-read" onclick="goTab('books')">
+      <div class="qcheck" id="dqc-read">✓</div>
+      <div style="flex:1"><div style="font-size:13px">📖 読書進捗を更新する</div></div>
+      <span class="tag" style="background:#7C6F5222;border:1px solid #7C6F5244;color:#7C6F52">〜2XP/%</span>
+    </div>
+    <div class="quest" id="dq-think" onclick="goTab('thought')">
+      <div class="qcheck" id="dqc-think">✓</div>
+      <div style="flex:1"><div style="font-size:13px">🧠 思考ログを1件記録する</div></div>
+      <span class="tag" style="background:#7C6F5222;border:1px solid #7C6F5244;color:#7C6F52">+15〜70XP</span>
+    </div>
+    <div class="quest" id="dq-dev" onclick="goTab('tech')">
+      <div class="qcheck" id="dqc-dev">✓</div>
+      <div style="flex:1"><div style="font-size:13px">⚙️ 開発を30分行う</div></div>
+      <span class="tag" style="background:#7C6F5222;border:1px solid #7C6F5244;color:#7C6F52">+10XP</span>
+    </div>
+    <div style="margin-top:8px;padding:10px;background:#0A0C0F;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:12px;color:#7C6F52">全達成ボーナス</span>
+      <span class="tag" id="dq-bonus" style="background:#7C6F5222;border:1px solid #7C6F5244;color:#7C6F52">+50XP</span>
+    </div>
+  </div>
+  <div class="statgrid">
+    <div class="statcard"><div style="font-size:20px;margin-bottom:4px">📚</div><div class="statnum" id="h-books">0冊</div><div class="statlabel">読了冊数</div></div>
+    <div class="statcard"><div style="font-size:20px;margin-bottom:4px">💭</div><div class="statnum" id="h-thoughts">0件</div><div class="statlabel">考察数</div></div>
+    <div class="statcard"><div style="font-size:20px;margin-bottom:4px">🔨</div><div class="statnum" id="h-works">0件</div><div class="statlabel">制作物</div></div>
+  </div>
+</div>
+
+<!-- BOOKS -->
+<div id="tab-books" class="tab">
+  <div class="card">
+    <div class="cardtitle">📖 本を登録する</div>
+    <input class="inp" id="book-title" placeholder="タイトル">
+    <input class="inp" id="book-pages" placeholder="総ページ数" type="number" min="1">
+    <div style="font-size:11px;color:#7C6F52;margin-bottom:6px">カテゴリ（XP補正）</div>
+    <select class="inp" id="book-cat" style="cursor:pointer">
+      <option value="novel">📖 小説 ×1.0</option>
+      <option value="shinsho">📰 新書 ×1.1</option>
+      <option value="technical">🔬 専門書 ×1.3</option>
+      <option value="philosophy">🏛️ 哲学 ×1.5</option>
+    </select>
+    <button class="btn btn-primary" onclick="addBook()">登録する</button>
+  </div>
+  <div id="book-list"></div>
+</div>
+
+<!-- THOUGHT -->
+<div id="tab-thought" class="tab">
+  <div class="card">
+    <div class="cardtitle">🧠 思考ログを記録する</div>
+    <div style="font-size:11px;color:#7C6F52;margin-bottom:6px">対象の本（任意）</div>
+    <select class="inp" id="th-book" style="cursor:pointer"></select>
+    <div class="charcnt ng" id="sum-cnt"><span>要約 <span style="color:#9B7E4A">+10XP</span></span><span id="sum-n" style="font-family:'JetBrains Mono',monospace">0 / 100</span></div>
+    <div class="minixpbar"><div class="minixpfill" id="sum-bar" style="width:0%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A)"></div></div>
+    <textarea class="ta" id="th-summary" placeholder="要約（100文字以上）" oninput="updateThoughtPreview()"></textarea>
+    <div class="charcnt ng" id="imp-cnt"><span>感想 <span style="color:#9B7E4A">+15XP</span></span><span id="imp-n" style="font-family:'JetBrains Mono',monospace">0 / 200</span></div>
+    <div class="minixpbar"><div class="minixpfill" id="imp-bar" style="width:0%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A)"></div></div>
+    <textarea class="ta" id="th-impression" placeholder="感想（200文字以上）" oninput="updateThoughtPreview()"></textarea>
+    <div style="font-size:11px;color:#7C6F52;margin-bottom:4px" id="ctr-lbl">反対意見 <span style="color:#9B7E4A">+20XP</span></div>
+    <textarea class="ta" style="min-height:60px" id="th-counter" placeholder="反対意見・批判的視点" oninput="updateThoughtPreview()"></textarea>
+    <div style="font-size:11px;color:#7C6F52;margin-bottom:4px" id="per-lbl">別視点 <span style="color:#9B7E4A">+25XP</span></div>
+    <textarea class="ta" style="min-height:60px" id="th-perspective" placeholder="別の視点・別の解釈" oninput="updateThoughtPreview()"></textarea>
+    <div style="background:#0A0C0F;border-radius:8px;padding:12px;margin-bottom:12px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="th-tags"></div>
+      <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:13px" id="th-preview"></div>
+    </div>
+    <button class="btn btn-gold" onclick="submitThought()">記録する</button>
+  </div>
+  <div id="thought-log"></div>
+</div>
+
+<!-- TECH -->
+<div id="tab-tech" class="tab">
+  <div class="techitem">
+    <div class="techicon" style="background:#4A7C6F22;border:1px solid #4A7C6F44">⌨️</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-family:'Cinzel',serif;margin-bottom:2px">開発 30分</div>
+      <div style="font-size:11px;color:#7C6F52">コードを書いた・学習した</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:12px;color:#4A7C6F;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+10XP</div>
+      <button class="btn btn-primary" id="tech-dev-btn" style="padding:6px 14px;font-size:12px" onclick="logDev()">記録</button>
+    </div>
+  </div>
+  <div class="techitem">
+    <div class="techicon" style="background:#9B7E4A22;border:1px solid #9B7E4A44">🚀</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-family:'Cinzel',serif;margin-bottom:2px">Git Push</div>
+      <div style="font-size:11px;color:#7C6F52" id="push-sub">本日 0/5 回</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:12px;color:#9B7E4A;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+10XP</div>
+      <button class="btn btn-primary" id="push-btn" style="padding:6px 14px;font-size:12px" onclick="logPush()">記録</button>
+    </div>
+  </div>
+  <div class="techitem">
+    <div class="techicon" style="background:#C4A35A22;border:1px solid #C4A35A44">🏆</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-family:'Cinzel',serif;margin-bottom:2px">機能完成</div>
+      <div style="font-size:11px;color:#7C6F52">一つの機能・制作物を完成させた</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:12px;color:#C4A35A;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+100XP</div>
+      <button class="btn btn-gold" style="padding:6px 14px;font-size:12px" onclick="logFeature()">記録</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMPATHY -->
+<div id="tab-empathy" class="tab">
+  <!-- 人の意見を聞く -->
+  <div class="actitem">
+    <div class="actrow-top" style="margin-bottom:4px">
+      <div>
+        <div style="font-size:22px;margin-bottom:4px">👂</div>
+        <div style="font-size:14px;font-family:'Cinzel',serif">人の意見を聞く</div>
+        <div style="font-size:11px;color:#7C6F52;margin-top:2px" id="emp-listen-sub">本日 0 / 3回</div>
+      </div>
+      <span class="tag" style="background:#9B7E4A22;border:1px solid #9B7E4A44;color:#9B7E4A;align-self:flex-start">+10XP</span>
+    </div>
+    <div class="dotbar" id="emp-listen-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="emp-form">
+      <div class="emp-form-label">誰の、どんな意見を聞いたか <span style="color:#8B4A4A">*必須</span></div>
+      <textarea class="ta" style="min-height:60px;margin-bottom:8px" id="emp-listen-text" placeholder="例：友人の転職に対する考え方を聞いた。リスクより成長を優先するという視点が新鮮だった。"></textarea>
+      <button class="btn btn-primary" id="emp-listen-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('listen')">記録する</button>
+    </div>
+  </div>
+  <!-- 異なる価値観 -->
+  <div class="actitem">
+    <div class="actrow-top" style="margin-bottom:4px">
+      <div>
+        <div style="font-size:22px;margin-bottom:4px">🌍</div>
+        <div style="font-size:14px;font-family:'Cinzel',serif">異なる価値観を記録</div>
+        <div style="font-size:11px;color:#7C6F52;margin-top:2px" id="emp-diff-sub">本日 0 / 3回</div>
+      </div>
+      <span class="tag" style="background:#9B7E4A22;border:1px solid #9B7E4A44;color:#9B7E4A;align-self:flex-start">+20XP</span>
+    </div>
+    <div class="dotbar" id="emp-diff-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="emp-form">
+      <div class="emp-form-label">どんな価値観・考え方と出会ったか <span style="color:#8B4A4A">*必須</span></div>
+      <textarea class="ta" style="min-height:60px;margin-bottom:8px" id="emp-diff-text" placeholder="例：「お金より時間が大事」という人の考え方。自分は逆だったが、その人の生活を聞いて一理あると感じた。"></textarea>
+      <button class="btn btn-primary" id="emp-diff-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('different')">記録する</button>
+    </div>
+  </div>
+  <!-- 考えが変化 -->
+  <div class="actitem">
+    <div class="actrow-top" style="margin-bottom:4px">
+      <div>
+        <div style="font-size:22px;margin-bottom:4px">✨</div>
+        <div style="font-size:14px;font-family:'Cinzel',serif">自分の考えが変化した</div>
+        <div style="font-size:11px;color:#7C6F52;margin-top:2px" id="emp-changed-sub">本日 0 / 1回</div>
+      </div>
+      <span class="tag" style="background:#9B7E4A22;border:1px solid #9B7E4A44;color:#9B7E4A;align-self:flex-start">+50XP</span>
+    </div>
+    <div class="emp-form">
+      <div class="emp-form-label">何がどう変わったか <span style="color:#8B4A4A">*必須</span></div>
+      <textarea class="ta" style="min-height:80px;margin-bottom:8px" id="emp-changed-text" placeholder="例：「努力は必ず報われる」と信じていたが、構造的な不公平の存在を学び、努力だけでなく環境も重要だと考えが変わった。"></textarea>
+      <button class="btn btn-primary" id="emp-changed-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('changed')">記録する</button>
+    </div>
+  </div>
+</div>
+
+<!-- DIGNITY -->
+<div id="tab-dignity" class="tab">
+  <div class="actitem" id="dig-skin-card">
+    <div class="actrow-top">
+      <div><div style="font-size:26px;margin-bottom:4px">💧</div><div style="font-size:14px;font-family:'Cinzel',serif">スキンケア</div><div style="font-size:11px;color:#7C6F52;margin-top:2px">洗顔・保湿・日焼け止めなど</div></div>
+      <div style="text-align:right"><div style="font-size:14px;color:#9B7E4A;margin-bottom:8px;font-family:'JetBrains Mono',monospace">+2XP</div><button class="btn btn-primary" id="dig-skin-btn" style="padding:8px 16px" onclick="logDignity('skin',2)">記録</button></div>
+    </div>
+  </div>
+  <div class="actitem" id="dig-clean-card">
+    <div class="actrow-top">
+      <div><div style="font-size:26px;margin-bottom:4px">🧹</div><div style="font-size:14px;font-family:'Cinzel',serif">部屋掃除</div><div style="font-size:11px;color:#7C6F52;margin-top:2px">掃き掃除・拭き掃除・片付けなど</div></div>
+      <div style="text-align:right"><div style="font-size:14px;color:#9B7E4A;margin-bottom:8px;font-family:'JetBrains Mono',monospace">+5XP</div><button class="btn btn-primary" id="dig-clean-btn" style="padding:8px 16px" onclick="logDignity('clean',5)">記録</button></div>
+    </div>
+  </div>
+  <div class="actitem" id="dig-groom-card">
+    <div class="actrow-top">
+      <div><div style="font-size:26px;margin-bottom:4px">👔</div><div style="font-size:14px;font-family:'Cinzel',serif">身だしなみ改善</div><div style="font-size:11px;color:#7C6F52;margin-top:2px">服装・髪型・爪などを整えた</div></div>
+      <div style="text-align:right"><div style="font-size:14px;color:#9B7E4A;margin-bottom:8px;font-family:'JetBrains Mono',monospace">+10XP</div><button class="btn btn-primary" id="dig-groom-btn" style="padding:8px 16px" onclick="logDignity('groom',10)">記録</button></div>
+    </div>
+  </div>
+  <div id="dig-all-done" style="display:none">
+    <div class="card" style="border-color:#9B7E4A66;text-align:center;background:rgba(155,126,74,.06)">
+      <div style="font-size:28px;margin-bottom:8px">✨</div>
+      <div style="font-family:'Cinzel',serif;color:#9B7E4A">本日の品格を全て達成</div>
+    </div>
+  </div>
+</div>
+
+<!-- CALENDAR -->
+<div id="tab-calendar" class="tab">
+  <div class="card">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="calPrev()">‹</button>
+      <div class="cal-month" id="cal-month-label"></div>
+      <button class="cal-nav" onclick="calNext()">›</button>
+    </div>
+    <div class="cal-grid" id="cal-dow-row">
+      <div class="cal-dow">日</div><div class="cal-dow">月</div><div class="cal-dow">火</div>
+      <div class="cal-dow">水</div><div class="cal-dow">木</div><div class="cal-dow">金</div><div class="cal-dow">土</div>
+    </div>
+    <div class="cal-grid" id="cal-grid" style="margin-top:4px"></div>
+  </div>
+  <div id="cal-detail"></div>
+</div>
+
+<!-- GRAND SAGE -->
+<div id="tab-grand" class="tab">
+  <div class="card" style="border-color:#9B7E4A44;text-align:center;padding:32px 20px">
+    <div style="font-family:'Cinzel',serif;font-size:24px;color:#9B7E4A;letter-spacing:.2em;margin-bottom:8px">GRAND SAGE</div>
+    <div style="font-family:'Cinzel',serif;font-size:12px;color:#7C6F52;letter-spacing:.15em;margin-bottom:24px">TRIAL PROGRESS</div>
+    <div class="ring-wrap">
+      <svg viewBox="0 0 100 100" style="width:100%;height:100%">
+        <circle cx="50" cy="50" r="42" fill="none" stroke="#1E2530" stroke-width="8"/>
+        <circle id="gs-ring" cx="50" cy="50" r="42" fill="none" stroke="#9B7E4A" stroke-width="8" stroke-dasharray="0 264" stroke-linecap="round" transform="rotate(-90 50 50)" style="filter:drop-shadow(0 0 6px rgba(155,126,74,.6));transition:stroke-dasharray .6s ease"/>
+        <text id="gs-pct" x="50" y="54" text-anchor="middle" fill="#F0E6C0" font-size="16" font-weight="bold" font-family="monospace">0%</text>
+      </svg>
+    </div>
+    <div id="gs-bars"></div>
+  </div>
+  <div class="card" style="padding:16px">
+    <div class="cardtitle">🏛️ Grand Sage 到達条件</div>
+    <div id="gs-conds"></div>
+  </div>
+  <div class="card" style="padding:16px">
+    <div class="cardtitle">📜 レベル称号一覧</div>
+    <table class="titletable">
+      <thead><tr><th>到達Lv</th><th>称号</th><th>意味</th></tr></thead>
+      <tbody id="title-table-body"></tbody>
+    </table>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════
+const ALL_TITLES = [
+  { level:1,    label:"Apprentice",     jp:"見習い",         desc:"旅の始まり。知を求め、最初の一歩を踏み出した者",           color:"#7C6F52" },
+  { level:10,   label:"Novice",         jp:"初学者",         desc:"基礎に触れ、学ぶ喜びを知り始めた者",                      color:"#7C6F52" },
+  { level:25,   label:"Student",        jp:"学徒",           desc:"継続の力を身につけ、探求を日課とする者",                    color:"#8A7D62" },
+  { level:50,   label:"Scholar",        jp:"学者",           desc:"体系的な知識を積み重ね、思考の地盤を築いた者",             color:"#9B8B72" },
+  { level:75,   label:"Adept",          jp:"熟練者",         desc:"知識を実践に変える術を修め、技と理論を結ぶ者",             color:"#A09070" },
+  { level:100,  label:"Seeker",         jp:"求道者",         desc:"真理を求めて止まない。知識の地平を常に広げ続ける者",       color:"#9B7E4A" },
+  { level:150,  label:"Inquirer",       jp:"探究者",         desc:"問いを武器とし、あらゆる事象の本質を掘り下げる者",         color:"#9B7E4A" },
+  { level:200,  label:"Analyst",        jp:"分析家",         desc:"事象を分解し、構造を見抜く鋭い洞察を持つ者",              color:"#A08050" },
+  { level:250,  label:"Thinker",        jp:"思索者",         desc:"思考そのものを芸術とし、独自の哲学を紡ぐ者",              color:"#B09060" },
+  { level:300,  label:"Philosopher",    jp:"哲学者",         desc:"存在・知識・価値の根源を問い、普遍を追う者",              color:"#B09060" },
+  { level:350,  label:"Reasoner",       jp:"論理の士",       desc:"論理と批判的思考を駆使し、混沌に秩序をもたらす者",        color:"#B89840" },
+  { level:400,  label:"Visionary",      jp:"先見者",         desc:"時代の一歩先を見通し、未来の輪郭を描く者",                color:"#C0A050" },
+  { level:450,  label:"Architect",      jp:"設計者",         desc:"思想と技術で世界の構造を設計し、形にする者",              color:"#C0A050" },
+  { level:500,  label:"Creator",        jp:"創造者",         desc:"無から有を生み出し、知と創造を統合した者",                color:"#C4A35A" },
+  { level:550,  label:"Artificer",      jp:"工匠",           desc:"精巧な技で概念を具現化し、美と機能を両立する者",          color:"#C4A35A" },
+  { level:600,  label:"Master",         jp:"達人",           desc:"一つの道を極め、他者の指針となるほどの境地に至った者",    color:"#D4B46A" },
+  { level:650,  label:"Luminary",       jp:"光明者",         desc:"その存在が周囲を照らし、知の灯台となる者",                color:"#D4B46A" },
+  { level:700,  label:"Enlightened",    jp:"啓発者",         desc:"自己と世界の真相に目覚め、他者を啓く力を持つ者",         color:"#D8B870" },
+  { level:750,  label:"Sage",           jp:"賢者",           desc:"広大な知恵と深い洞察で、迷える者に道を示す者",            color:"#E0C070" },
+  { level:800,  label:"Elder Sage",     jp:"長老賢者",       desc:"長年の経験と知恵が熟成し、存在自体が伝説となった者",     color:"#E8C878" },
+  { level:850,  label:"Grand Scholar",  jp:"大学匠",         desc:"あらゆる学問体系を統合し、知の殿堂を体現する者",         color:"#ECCF80" },
+  { level:900,  label:"Transcendent",   jp:"超越者",         desc:"人知の限界に挑み、新たな知の地平を切り拓く者",           color:"#F0D888" },
+  { level:950,  label:"Sage Lord",      jp:"賢者王",         desc:"賢者の頂点に君臨し、次の時代の知を照らす者",             color:"#F4E090" },
+  { level:1000, label:"Sage Candidate", jp:"Grand Sage候補", desc:"最終試練の門前に立つ。Grand Sageへの道はここから始まる", color:"#FFE8A0" },
+];
+
+const BOOK_CATS = {
+  novel:      { label:"小説",  icon:"📖", mult:1.0, color:"#7C6F52" },
+  shinsho:    { label:"新書",  icon:"📰", mult:1.1, color:"#4A7C6F" },
+  technical:  { label:"専門書",icon:"🔬", mult:1.3, color:"#9B7E4A" },
+  philosophy: { label:"哲学",  icon:"🏛️", mult:1.5, color:"#C4A35A" },
+};
+
+const GRAND_SAGE_TARGET = { level:1000, wisdom:300, books:24, thoughts:100, works:3 };
+function requiredXP(lv){ return lv*lv*20; }
+function getTitle(lv){ let t=ALL_TITLES[0]; for(const r of ALL_TITLES){ if(lv>=r.level) t=r; } return t; }
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const DEFAULT = {
+  xp:0, level:1, wisdom:0, thoughtCount:0, workCount:0,
+  books:[], thoughts:[],
+  dailyProgress:{read:false,think:false,dev:false},
+  streak:{count:0,lastDate:null},
+  techLog:{pushCount:0,lastPushDate:null},
+  empathy:{listen:0,different:0,changed:false,lastDate:null},
+  dignity:{skin:false,clean:false,groom:false,lastDate:null},
+  // 日別ログ: { "2025-06-17": { xpGained, books:[{title,pct}], thoughts:[{summary}], empathy:[{text}], dignity:[], tech:[] } }
+  dayLog:{},
+  lastDaily:null,
+};
+
+let S = (()=>{
+  try{ const r=localStorage.getItem('gsj_v1'); if(r){ const p=JSON.parse(r); return {...DEFAULT,...p}; } return {...DEFAULT}; }
+  catch{ return {...DEFAULT}; }
+})();
+
+function save(){ localStorage.setItem('gsj_v1', JSON.stringify(S)); }
+
+// ─── 日別ログ helper ───────────────────────────────────────
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+
+function pushDayLog(key, entry){
+  const dk = todayKey();
+  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[] };
+  if(!S.dayLog[dk][key]) S.dayLog[dk][key] = [];
+  S.dayLog[dk][key].push(entry);
+}
+
+function addDayXP(amount){
+  const dk = todayKey();
+  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[] };
+  S.dayLog[dk].xpGained = (S.dayLog[dk].xpGained||0) + amount;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DAILY RESET
+// ═══════════════════════════════════════════════════════════
+function dailyReset(){
+  const today = new Date().toDateString();
+  if(S.lastDaily !== today){
+    S.dailyProgress = {read:false,think:false,dev:false};
+    S.lastDaily = today;
+    S.empathy = {...S.empathy, listen:0, different:0, changed:false, lastDate:today};
+    S.dignity = {skin:false, clean:false, groom:false, lastDate:today};
+    S.techLog = {...S.techLog, pushCount:0, lastPushDate:today};
+    S._dailyBonusToday = null;
+    save();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// XP
+// ═══════════════════════════════════════════════════════════
+function gainXP(amount){
+  amount = Math.round(amount);
+  let xp=S.xp+amount, level=S.level, leveledUp=false;
+  while(level<1000 && xp>=requiredXP(level)){ level++; leveledUp=true; }
+  S.xp=xp; S.level=level;
+  addDayXP(amount);
+  save(); refreshUI();
+  if(leveledUp) showLevelUp(level);
+}
+
+function showLevelUp(lv){
+  const t=getTitle(lv);
+  document.getElementById('lvnum').textContent=lv;
+  document.getElementById('lvtitle').textContent=t.label+' — '+t.jp;
+  const ov=document.getElementById('lvoverlay');
+  ov.classList.add('show');
+  setTimeout(()=>ov.classList.remove('show'),2800);
+}
+
+function checkDaily(){
+  const dp=S.dailyProgress;
+  if(dp.read && dp.think && dp.dev && !S._dailyBonusToday){
+    S._dailyBonusToday=new Date().toDateString();
+    gainXP(50);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// UI REFRESH
+// ═══════════════════════════════════════════════════════════
+function refreshUI(){
+  const {xp,level,wisdom,dailyProgress,streak,books,thoughtCount,workCount}=S;
+  const needed=requiredXP(level);
+  const prevNeeded=level>1?requiredXP(level-1):0;
+  const pct=level===1?Math.min(100,(xp/needed)*100):Math.min(100,((xp-prevNeeded)/(needed-prevNeeded))*100);
+  const t=getTitle(level);
+
+  document.getElementById('topbadge').textContent=`Lv ${level} · ${xp.toLocaleString()} XP`;
+  document.getElementById('h-level').textContent=level;
+  document.getElementById('h-title').textContent=t.label+' — '+t.jp;
+  document.getElementById('h-wisdom').textContent=wisdom;
+  document.getElementById('h-xpfill').style.width=pct+'%';
+  document.getElementById('h-xptext').textContent=`XP ${xp.toLocaleString()} / ${needed.toLocaleString()}`;
+  document.getElementById('h-xpnext').textContent=`次のLvまで ${Math.max(0,needed-xp).toLocaleString()} XP`;
+  const booksRead=books.filter(b=>b.done).length;
+  document.getElementById('h-books').textContent=booksRead+'冊';
+  document.getElementById('h-thoughts').textContent=thoughtCount+'件';
+  document.getElementById('h-works').textContent=workCount+'件';
+  if(streak.count>0){ const el=document.getElementById('h-streak'); el.textContent=`🔥 ${streak.count}日連続`; el.style.display='block'; }
+
+  // Daily quests
+  [{key:'read',id:'dq-read',cid:'dqc-read'},{key:'think',id:'dq-think',cid:'dqc-think'},{key:'dev',id:'dq-dev',cid:'dqc-dev'}].forEach(q=>{
+    const done=dailyProgress[q.key];
+    document.getElementById(q.id).className='quest'+(done?' done':'');
+    document.getElementById(q.cid).className='qcheck'+(done?' done':'');
+    const tag=document.getElementById(q.id).querySelector('.tag');
+    if(tag){ tag.style.background=done?'rgba(74,124,111,.2)':'rgba(124,111,82,.13)'; tag.style.borderColor=done?'rgba(74,124,111,.4)':'rgba(124,111,82,.27)'; tag.style.color=done?'#4A7C6F':'#7C6F52'; }
+  });
+  const allDq=dailyProgress.read&&dailyProgress.think&&dailyProgress.dev;
+  const bonus=document.getElementById('dq-bonus');
+  bonus.style.background=allDq?'rgba(155,126,74,.2)':'rgba(124,111,82,.13)';
+  bonus.style.borderColor=allDq?'rgba(155,126,74,.4)':'rgba(124,111,82,.27)';
+  bonus.style.color=allDq?'#9B7E4A':'#7C6F52';
+
+  // Tech
+  const today=new Date().toDateString();
+  const todayPush=S.techLog.lastPushDate===today?S.techLog.pushCount:0;
+  document.getElementById('push-sub').textContent=`本日 ${todayPush}/5 回`;
+  const pushBtn=document.getElementById('push-btn');
+  pushBtn.disabled=todayPush>=5; pushBtn.className='btn '+(todayPush>=5?'btn-secondary':'btn-primary'); pushBtn.textContent=todayPush>=5?'上限到達':'記録';
+  const devDone=dailyProgress.dev;
+  const devBtn=document.getElementById('tech-dev-btn');
+  devBtn.disabled=devDone; devBtn.className='btn '+(devDone?'btn-secondary':'btn-primary'); devBtn.textContent=devDone?'完了':'記録';
+
+  // Empathy
+  const sameEmp=S.empathy.lastDate===today;
+  const lc=sameEmp?S.empathy.listen:0, dc=sameEmp?S.empathy.different:0, chg=sameEmp&&S.empathy.changed;
+  updateEmpathyUI('listen',lc,3); updateEmpathyUI('diff',dc,3);
+  document.getElementById('emp-changed-sub').textContent=`本日 ${chg?1:0} / 1回`;
+  const chgBtn=document.getElementById('emp-changed-btn');
+  chgBtn.disabled=chg; chgBtn.className='btn '+(chg?'btn-secondary':'btn-primary'); chgBtn.textContent=chg?'上限到達':'記録する';
+
+  // Dignity
+  const sameDig=S.dignity.lastDate===today;
+  ['skin','clean','groom'].forEach(k=>{
+    const done=sameDig&&S.dignity[k];
+    document.getElementById(`dig-${k}-card`).style.borderColor=done?'#4A7C6F44':'#2A3545';
+    const btn=document.getElementById(`dig-${k}-btn`);
+    btn.disabled=done; btn.className='btn '+(done?'btn-secondary':'btn-primary'); btn.textContent=done?'完了 ✓':'記録';
+  });
+  document.getElementById('dig-all-done').style.display=(sameDig&&S.dignity.skin&&S.dignity.clean&&S.dignity.groom)?'block':'none';
+
+  renderBooks(); renderThoughtLog(); refreshThoughtSelect(); renderGrandSage(); renderTitleTable();
+}
+
+function updateEmpathyUI(key,count,max){
+  document.getElementById(`emp-${key}-sub`).textContent=`本日 ${count} / ${max}回`;
+  const dots=document.getElementById(`emp-${key}-dots`);
+  if(dots) dots.querySelectorAll('.dot').forEach((d,i)=>{ d.className='dot'+(i<count?' fill':''); });
+  const btn=document.getElementById(`emp-${key}-btn`);
+  const done=count>=max;
+  btn.disabled=done; btn.className='btn '+(done?'btn-secondary':'btn-primary'); btn.textContent=done?'上限到達':'記録する';
+}
+
+// ═══════════════════════════════════════════════════════════
+// BOOKS
+// ═══════════════════════════════════════════════════════════
+function addBook(){
+  const title=document.getElementById('book-title').value.trim();
+  const total=parseInt(document.getElementById('book-pages').value);
+  const cat=document.getElementById('book-cat').value;
+  if(!title||!total||total<1) return;
+  S.books.push({ id:Date.now(), title, totalPages:total, currentPage:0, done:false, cat });
+  document.getElementById('book-title').value='';
+  document.getElementById('book-pages').value='';
+  save(); renderBooks();
+}
+
+function renderBooks(){
+  const el=document.getElementById('book-list');
+  if(S.books.length===0){ el.innerHTML='<div class="empty"><div class="emptyi">📚</div><div class="emptytext">まだ本が登録されていない</div></div>'; return; }
+  el.innerHTML=S.books.map(b=>{
+    const pct=Math.round((b.currentPage/b.totalPages)*100);
+    const cat=BOOK_CATS[b.cat]||BOOK_CATS.novel;
+    return `<div class="bookcard${b.done?' done':''}">
+      <div class="bookrow">
+        <div style="font-family:'Cinzel',serif;font-size:14px;color:${b.done?'#4A7C6F':'#F0E6C0'};flex:1;margin-right:8px">${b.done?'✓ ':''}${escHtml(b.title)}</div>
+        <span class="tag" style="background:${b.done?'#4A7C6F22':'#9B7E4A22'};border:1px solid ${b.done?'#4A7C6F44':'#9B7E4A44'};color:${b.done?'#4A7C6F':'#9B7E4A'};flex-shrink:0">${pct}%</span>
+      </div>
+      <span class="cat-badge" style="background:${cat.color}22;border:1px solid ${cat.color}44;color:${cat.color}">${cat.icon} ${cat.label} ×${cat.mult.toFixed(1)}</span>
+      <div style="font-size:12px;color:#7C6F52;margin-bottom:10px;font-family:'JetBrains Mono',monospace">${b.currentPage} / ${b.totalPages} ページ</div>
+      <div class="xpmini"><div class="xpminifill" style="width:${pct}%"></div></div>
+      ${!b.done?`<div class="bookpageinput">
+        <input class="inp" type="number" placeholder="現在ページ (${b.currentPage})" id="pg-${b.id}" onkeydown="if(event.key==='Enter')updatePage(${b.id})">
+        <button class="btn btn-secondary" style="padding:10px 16px;margin-bottom:0;white-space:nowrap" onclick="updatePage(${b.id})">更新</button>
+      </div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function updatePage(id){
+  const inp=document.getElementById('pg-'+id);
+  if(!inp) return;
+  const val=parseInt(inp.value);
+  if(isNaN(val)) return;
+  const book=S.books.find(b=>b.id===id);
+  if(!book) return;
+  const prev=book.currentPage;
+  const cur=Math.min(val,book.totalPages);
+  const prevPct=Math.floor((prev/book.totalPages)*100);
+  const curPct=Math.floor((cur/book.totalPages)*100);
+  const diffPct=curPct-prevPct;
+  const cat=BOOK_CATS[book.cat]||BOOK_CATS.novel;
+  let xpGain=diffPct>0 ? Math.round(diffPct*2*cat.mult) : 0;
+  let done=book.done;
+  if(cur>=book.totalPages&&!book.done){ xpGain+=Math.round(100*cat.mult); done=true; }
+  book.currentPage=cur; book.done=done;
+  S.dailyProgress.read=true;
+  // 日別ログ
+  pushDayLog('books', { title:book.title, cat:cat.label, pct:curPct, xp:xpGain, done });
+  save();
+  if(xpGain>0) gainXP(xpGain); else renderBooks();
+  inp.value='';
+  checkDaily();
+}
+
+// ═══════════════════════════════════════════════════════════
+// THOUGHT
+// ═══════════════════════════════════════════════════════════
+function refreshThoughtSelect(){
+  const sel=document.getElementById('th-book');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">── 本を選択 ──</option>'+S.books.map(b=>`<option value="${b.id}">${escHtml(b.title)}</option>`).join('');
+  sel.value=cur;
+}
+
+function updateThoughtPreview(){
+  const sum=document.getElementById('th-summary').value.trim().length;
+  const imp=document.getElementById('th-impression').value.trim().length;
+  const ctr=document.getElementById('th-counter').value.trim().length;
+  const per=document.getElementById('th-perspective').value.trim().length;
+  const s=sum>=100,i=imp>=200,c=ctr>0,p=per>0;
+  document.getElementById('sum-n').textContent=`${sum} / 100`;
+  document.getElementById('imp-n').textContent=`${imp} / 200`;
+  document.getElementById('sum-bar').style.width=Math.min(100,(sum/100)*100)+'%';
+  document.getElementById('imp-bar').style.width=Math.min(100,(imp/200)*100)+'%';
+  document.getElementById('sum-cnt').className='charcnt '+(s?'ok':'ng');
+  document.getElementById('imp-cnt').className='charcnt '+(i?'ok':'ng');
+  document.getElementById('ctr-lbl').style.color=c?'#4A7C6F':'#7C6F52';
+  document.getElementById('per-lbl').style.color=p?'#4A7C6F':'#7C6F52';
+  let xp=0; if(s)xp+=10; if(i)xp+=15; if(c)xp+=20; if(p)xp+=25;
+  const wisdom=s&&i&&c&&p;
+  document.getElementById('th-tags').innerHTML=[{lbl:'要約',ok:s},{lbl:'感想',ok:i},{lbl:'反対',ok:c},{lbl:'別視点',ok:p}].map(t=>
+    `<span class="tag" style="background:${t.ok?'#4A7C6F22':'#2A354522'};border:1px solid ${t.ok?'#4A7C6F44':'#2A3545'};color:${t.ok?'#4A7C6F':'#2A3545'}">${t.lbl} ${t.ok?'✓':'✗'}</span>`
+  ).join('');
+  document.getElementById('th-preview').innerHTML=`<span style="color:#9B7E4A">+${xp} XP</span>${wisdom?'<span style="color:#4A7C6F;margin-left:12px">+ Wisdom 1</span>':''}`;
+}
+
+function submitThought(){
+  const sum=document.getElementById('th-summary').value.trim();
+  const imp=document.getElementById('th-impression').value.trim();
+  const ctr=document.getElementById('th-counter').value.trim();
+  const per=document.getElementById('th-perspective').value.trim();
+  const s=sum.length>=100,i=imp.length>=200,c=ctr.length>0,p=per.length>0;
+  if(!s&&!i&&!c&&!p) return;
+  let xp=0; if(s)xp+=10; if(i)xp+=15; if(c)xp+=20; if(p)xp+=25;
+  const wisdom=s&&i&&c&&p;
+  if(wisdom) S.wisdom++;
+  S.thoughtCount++;
+  S.thoughts.unshift({id:Date.now(),sum,imp,ctr,per,xp,wisdom});
+  S.dailyProgress.think=true;
+  pushDayLog('thoughts',{summary:sum.slice(0,80),xp,wisdom});
+  save(); gainXP(xp); checkDaily();
+  ['th-summary','th-impression','th-counter','th-perspective'].forEach(id=>document.getElementById(id).value='');
+  updateThoughtPreview(); renderThoughtLog();
+}
+
+function renderThoughtLog(){
+  const el=document.getElementById('thought-log');
+  if(S.thoughts.length===0){ el.innerHTML=''; return; }
+  el.innerHTML=`<div class="card"><div class="cardtitle">📜 思考ログ履歴</div>${
+    S.thoughts.slice(0,5).map(t=>`<div class="thlog">
+      <div class="throw"><span style="font-size:11px;color:#7C6F52">${new Date(t.id).toLocaleDateString('ja-JP')}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#9B7E4A">+${t.xp}XP${t.wisdom?' +Wisdom':''}</span></div>
+      <div style="font-size:13px;color:#F0E6C0;line-height:1.5">${escHtml(t.sum.slice(0,60))}${t.sum.length>60?'…':''}</div>
+    </div>`).join('')
+  }</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// TECH
+// ═══════════════════════════════════════════════════════════
+function logDev(){
+  S.dailyProgress.dev=true;
+  pushDayLog('tech',{type:'開発30分',xp:10});
+  save(); gainXP(10); checkDaily();
+}
+function logPush(){
+  const today=new Date().toDateString();
+  const count=S.techLog.lastPushDate===today?S.techLog.pushCount:0;
+  if(count>=5) return;
+  S.techLog={pushCount:count+1,lastPushDate:today};
+  S.dailyProgress.dev=true;
+  pushDayLog('tech',{type:'Git Push',xp:10});
+  save(); gainXP(10); checkDaily();
+}
+function logFeature(){
+  S.workCount++;
+  pushDayLog('tech',{type:'機能完成',xp:100});
+  save(); gainXP(100);
+}
+
+// ═══════════════════════════════════════════════════════════
+// EMPATHY（テキスト必須）
+// ═══════════════════════════════════════════════════════════
+function logEmpathy(type){
+  const today=new Date().toDateString();
+  const sameDay=S.empathy.lastDate===today;
+  const e={...S.empathy,lastDate:today};
+
+  if(type==='listen'){
+    const txt=document.getElementById('emp-listen-text').value.trim();
+    if(!txt){ shakeTa('emp-listen-text'); return; }
+    const c=sameDay?e.listen:0;
+    if(c>=3) return;
+    e.listen=c+1;
+    pushDayLog('empathy',{type:'人の意見を聞く',text:txt,xp:10});
+    S.empathy=e; save(); gainXP(10);
+    document.getElementById('emp-listen-text').value='';
+  } else if(type==='different'){
+    const txt=document.getElementById('emp-diff-text').value.trim();
+    if(!txt){ shakeTa('emp-diff-text'); return; }
+    const c=sameDay?e.different:0;
+    if(c>=3) return;
+    e.different=c+1;
+    pushDayLog('empathy',{type:'異なる価値観',text:txt,xp:20});
+    S.empathy=e; save(); gainXP(20);
+    document.getElementById('emp-diff-text').value='';
+  } else if(type==='changed'){
+    const txt=document.getElementById('emp-changed-text').value.trim();
+    if(!txt){ shakeTa('emp-changed-text'); return; }
+    if(sameDay&&e.changed) return;
+    e.changed=true;
+    pushDayLog('empathy',{type:'考えの変化',text:txt,xp:50});
+    S.empathy=e; save(); gainXP(50);
+    document.getElementById('emp-changed-text').value='';
+  }
+  refreshUI();
+}
+
+function shakeTa(id){
+  const el=document.getElementById(id);
+  el.classList.add('required-err');
+  el.focus();
+  setTimeout(()=>el.classList.remove('required-err'),1500);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DIGNITY
+// ═══════════════════════════════════════════════════════════
+function logDignity(key,xp){
+  const today=new Date().toDateString();
+  if(S.dignity.lastDate===today&&S.dignity[key]) return;
+  S.dignity={...S.dignity,[key]:true,lastDate:today};
+  const labels={skin:'スキンケア',clean:'部屋掃除',groom:'身だしなみ改善'};
+  pushDayLog('dignity',{type:labels[key],xp});
+  save(); gainXP(xp);
+}
+
+// ═══════════════════════════════════════════════════════════
+// CALENDAR
+// ═══════════════════════════════════════════════════════════
+let calYear=new Date().getFullYear(), calMonth=new Date().getMonth(), calSelected=null;
+
+function renderCalendar(){
+  const now=new Date();
+  const todayStr=now.toISOString().slice(0,10);
+  document.getElementById('cal-month-label').textContent=`${calYear}年 ${calMonth+1}月`;
+
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+
+  let html='';
+  // 空白
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day empty"></div>`;
+
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const log=S.dayLog[dateStr];
+    const isToday=dateStr===todayStr;
+    const isSel=dateStr===calSelected;
+    const hasData=!!log;
+
+    // ドット生成
+    let dots='';
+    if(log){
+      if(log.books&&log.books.length)   dots+=`<div class="cal-dot" style="background:#9B7E4A"></div>`;
+      if(log.thoughts&&log.thoughts.length) dots+=`<div class="cal-dot" style="background:#4A7C6F"></div>`;
+      if(log.tech&&log.tech.length)     dots+=`<div class="cal-dot" style="background:#C4A35A"></div>`;
+      if(log.empathy&&log.empathy.length) dots+=`<div class="cal-dot" style="background:#7C9F8A"></div>`;
+      if(log.dignity&&log.dignity.length) dots+=`<div class="cal-dot" style="background:#8A7C9F"></div>`;
+    }
+
+    let cls='cal-day';
+    if(hasData) cls+=' has-data';
+    if(isToday) cls+=' today';
+    if(isSel) cls+=' selected';
+
+    html+=`<div class="${cls}" onclick="selectCalDay('${dateStr}')">
+      <div class="cal-day-num" style="color:${isToday?'#9B7E4A':hasData?'#F0E6C0':'#2A3545'}">${d}</div>
+      ${dots?`<div class="cal-dots">${dots}</div>`:''}
+    </div>`;
+  }
+
+  document.getElementById('cal-grid').innerHTML=html;
+  renderCalDetail();
+}
+
+function selectCalDay(dateStr){
+  calSelected=calSelected===dateStr?null:dateStr;
+  renderCalendar();
+}
+
+function renderCalDetail(){
+  const el=document.getElementById('cal-detail');
+  if(!calSelected){ el.innerHTML=''; return; }
+  const log=S.dayLog[calSelected];
+  if(!log){ el.innerHTML=`<div class="day-detail"><div class="day-detail-title">${calSelected}</div><div style="color:#7C6F52;font-size:13px">この日の記録はありません</div></div>`; return; }
+
+  const d=new Date(calSelected+'T00:00:00');
+  const dateLabel=d.toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
+  let html=`<div class="day-detail"><div class="day-detail-title">📅 ${dateLabel}</div>`;
+
+  // XP合計
+  html+=`<div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9B7E4A;margin-bottom:12px">本日獲得 +${(log.xpGained||0).toLocaleString()} XP</div>`;
+
+  // 読書
+  if(log.books&&log.books.length){
+    html+=`<div class="detail-section"><div class="detail-section-label">📖 読書</div>`;
+    log.books.forEach(b=>{
+      html+=`<div class="detail-item">${escHtml(b.title)} <span style="color:#7C6F52;font-size:11px">[${b.cat}]</span> → ${b.pct}%${b.done?' ✓読了':''} <span class="detail-xp">+${b.xp}XP</span></div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // 思考
+  if(log.thoughts&&log.thoughts.length){
+    html+=`<div class="detail-section"><div class="detail-section-label">🧠 思考ログ</div>`;
+    log.thoughts.forEach(t=>{
+      html+=`<div class="detail-item">${escHtml(t.summary)}${t.summary.length>=80?'…':''} <span class="detail-xp">+${t.xp}XP${t.wisdom?' +Wisdom':''}</span></div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // 開発
+  if(log.tech&&log.tech.length){
+    html+=`<div class="detail-section"><div class="detail-section-label">⚙️ 技術</div>`;
+    log.tech.forEach(t=>{ html+=`<div class="detail-item">${t.type} <span class="detail-xp">+${t.xp}XP</span></div>`; });
+    html+=`</div>`;
+  }
+
+  // 共感
+  if(log.empathy&&log.empathy.length){
+    html+=`<div class="detail-section"><div class="detail-section-label">👂 共感</div>`;
+    log.empathy.forEach(e=>{
+      html+=`<div class="detail-item"><span style="color:#7C9F8A">${e.type}</span> — ${escHtml(e.text.slice(0,60))}${e.text.length>60?'…':''} <span class="detail-xp">+${e.xp}XP</span></div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // 品格
+  if(log.dignity&&log.dignity.length){
+    html+=`<div class="detail-section"><div class="detail-section-label">✨ 品格</div>`;
+    log.dignity.forEach(d=>{ html+=`<div class="detail-item">${d.type} <span class="detail-xp">+${d.xp}XP</span></div>`; });
+    html+=`</div>`;
+  }
+
+  html+=`</div>`;
+  el.innerHTML=html;
+}
+
+function calPrev(){ calMonth--; if(calMonth<0){ calMonth=11; calYear--; } renderCalendar(); }
+function calNext(){ calMonth++; if(calMonth>11){ calMonth=0; calYear++; } renderCalendar(); }
+
+// ═══════════════════════════════════════════════════════════
+// GRAND SAGE
+// ═══════════════════════════════════════════════════════════
+function renderGrandSage(){
+  const {level,wisdom,books,thoughtCount,workCount}=S;
+  const booksRead=books.filter(b=>b.done).length;
+  const conditions=[
+    {label:"Level",  current:level,       target:GRAND_SAGE_TARGET.level,    color:"#9B7E4A"},
+    {label:"Wisdom", current:wisdom,       target:GRAND_SAGE_TARGET.wisdom,   color:"#4A7C6F"},
+    {label:"読了",   current:booksRead,    target:GRAND_SAGE_TARGET.books,    color:"#7C6F52"},
+    {label:"考察",   current:thoughtCount, target:GRAND_SAGE_TARGET.thoughts, color:"#C4A35A"},
+    {label:"制作物", current:workCount,    target:GRAND_SAGE_TARGET.works,    color:"#5A8A7C"},
+  ];
+  const totalPct=conditions.reduce((s,c)=>s+Math.min(100,(c.current/c.target)*100),0)/conditions.length;
+  const circ=2*Math.PI*42;
+  document.getElementById('gs-ring').setAttribute('stroke-dasharray',`${circ*totalPct/100} ${circ*(1-totalPct/100)}`);
+  document.getElementById('gs-pct').textContent=Math.round(totalPct)+'%';
+  document.getElementById('gs-bars').innerHTML=conditions.map(c=>{
+    const p=Math.min(100,(c.current/c.target)*100);
+    return `<div class="gsbar"><div class="gsrow"><span style="font-size:12px;color:#7C6F52">${c.label}</span><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:${c.color}">${c.current.toLocaleString()} / ${c.target.toLocaleString()}</span></div>
+    <div style="height:4px;background:#0A0C0F;border-radius:2px"><div style="height:100%;width:${p}%;background:${c.color};border-radius:2px;box-shadow:0 0 8px ${c.color}66;transition:width .5s ease"></div></div></div>`;
+  }).join('');
+  document.getElementById('gs-conds').innerHTML=conditions.map(c=>{
+    const ok=c.current>=c.target;
+    return `<div class="conditem"><div class="condcirc${ok?' ok':''}">${ok?'✓':''}</div><span style="font-size:13px;color:${ok?'#4A7C6F':'#7C6F52'}">${c.label}: ${c.current.toLocaleString()} / ${c.target.toLocaleString()}</span></div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TITLE TABLE
+// ═══════════════════════════════════════════════════════════
+function renderTitleTable(){
+  const lv=S.level;
+  document.getElementById('title-table-body').innerHTML=ALL_TITLES.map((t,i)=>{
+    const isCurrent=lv>=t.level&&(i===ALL_TITLES.length-1||lv<ALL_TITLES[i+1].level);
+    const isPast=!isCurrent&&lv>=t.level;
+    const pill=isCurrent
+      ?`<span class="lv-pill" style="background:${t.color}22;color:${t.color};border:1px solid ${t.color}44">Lv ${t.level}+</span>`
+      :`<span class="lv-pill" style="background:#0A0C0F;color:${isPast?'#4A7C6F':'#2A3545'};border:1px solid ${isPast?'#4A7C6F33':'#1A2030'}">Lv ${t.level}+</span>`;
+    return `<tr>
+      <td>${pill}</td>
+      <td><div style="font-family:'Cinzel',serif;font-weight:${isCurrent?700:400};color:${isCurrent?'#F0E6C0':isPast?'#4A7C6F':'#2A3545'}">${t.label}</div><div style="font-size:11px;color:${isCurrent?'#9B7E4A':isPast?'#4A7C6F55':'#1A2030'};margin-top:2px">${t.jp}</div></td>
+      <td style="font-size:11px;color:${isCurrent?'#7C6F52':isPast?'#2A3545':'#1A2030'};line-height:1.4">${t.desc}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════════════
+const TAB_KEYS=['home','books','thought','tech','empathy','dignity','calendar','grand'];
+
+function switchTab(key){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+key).classList.add('active');
+  const idx=TAB_KEYS.indexOf(key);
+  document.querySelectorAll('.navbtn')[idx].classList.add('active');
+  S.activeTab=key;
+  if(key==='calendar') renderCalendar();
+}
+function goTab(key){ switchTab(key); }
+
+// ═══════════════════════════════════════════════════════════
+// UTIL
+// ═══════════════════════════════════════════════════════════
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ═══════════════════════════════════════════════════════════
+// SUPABASE
+// ═══════════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://wkiumimawnshjblneiea.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndraXVtaW1hd25zaGpibG5laWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTc3NjIsImV4cCI6MjA5NzI5Mzc2Mn0.iloRwxbuSbIzBWkPpteybWxk7HyF1kJ1KQX7Q4lIh2M';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+let currentUser = null;
+let syncTimer = null;
+let authMode = 'signin'; // 'signin' | 'signup'
+
+// ─── 認証モード切替 ───────────────────────────────────────
+function toggleAuthMode(){
+  authMode = authMode === 'signin' ? 'signup' : 'signin';
+  document.getElementById('auth-mode-label').textContent = authMode === 'signin' ? 'サインイン' : '新規登録';
+  document.getElementById('auth-submit-btn').textContent = authMode === 'signin' ? 'サインイン' : '登録する';
+  document.getElementById('auth-toggle-text').innerHTML = authMode === 'signin'
+    ? 'アカウントがない？ <span onclick="toggleAuthMode()">新規登録</span>'
+    : 'すでにアカウントがある？ <span onclick="toggleAuthMode()">サインイン</span>';
+  document.getElementById('auth-err').textContent = '';
+}
+
+async function authSubmit(){
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-err');
+  errEl.textContent = '';
+  if(!email || !password){ errEl.textContent = 'メールとパスワードを入力してください'; return; }
+  const btn = document.getElementById('auth-submit-btn');
+  btn.disabled = true; btn.textContent = '...';
+  try {
+    let res;
+    if(authMode === 'signin'){
+      res = await sb.auth.signInWithPassword({ email, password });
+    } else {
+      res = await sb.auth.signUp({ email, password });
+    }
+    if(res.error) throw res.error;
+    // onAuthStateChangeが拾う
+  } catch(e){
+    errEl.textContent = e.message || 'エラーが発生しました';
+    btn.disabled = false;
+    btn.textContent = authMode === 'signin' ? 'サインイン' : '登録する';
+  }
+}
+
+async function signOut(){
+  await sb.auth.signOut();
+  currentUser = null;
+  document.getElementById('auth-overlay').classList.remove('hidden');
+}
+
+// ─── Supabase からロード ─────────────────────────────────
+async function loadFromSupabase(){
+  if(!currentUser) return;
+  setSyncStatus('syncing','同期中...');
+  try {
+    const { data, error } = await sb
+      .from('game_state')
+      .select('state')
+      .eq('user_id', currentUser.id)
+      .single();
+    if(error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
+    if(data && data.state){
+      const remote = data.state;
+      // ローカルより新しければ上書き
+      const local = S;
+      // updated_atで比較。なければremoteを優先
+      S = { ...DEFAULT, ...remote };
+      save();
+    }
+    setSyncStatus('ok', '同期済み');
+  } catch(e){
+    console.error('load error', e);
+    setSyncStatus('err', 'エラー');
+  }
+}
+
+// ─── Supabase へ保存（デバウンス3秒）───────────────────
+function scheduleSyncToSupabase(){
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(syncToSupabase, 3000);
+  setSyncStatus('syncing', '保存中...');
+}
+
+async function syncToSupabase(){
+  if(!currentUser) return;
+  try {
+    const { error } = await sb
+      .from('game_state')
+      .upsert(
+        { user_id: currentUser.id, state: S, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id' }
+      );
+    if(error) throw error;
+    setSyncStatus('ok', '同期済み');
+  } catch(e){
+    console.error('sync error', e);
+    setSyncStatus('err', 'エラー');
+  }
+}
+
+function setSyncStatus(status, text){
+  const dot = document.getElementById('sync-dot');
+  document.getElementById('sync-text').textContent = text;
+  dot.className = 'sync-dot ' + status;
+}
+
+// ─── save() をオーバーライドして自動同期 ─────────────────
+const _origSave = save;
+function save(){
+  const s = {...S};
+  localStorage.setItem('gsj_v1', JSON.stringify(s));
+  scheduleSyncToSupabase();
+}
+
+// ─── 認証状態監視 ────────────────────────────────────────
+sb.auth.onAuthStateChange(async (event, session) => {
+  if(session && session.user){
+    currentUser = session.user;
+    document.getElementById('auth-overlay').classList.add('hidden');
+    await loadFromSupabase();
+    dailyReset();
+    refreshUI();
+    if(S.activeTab && TAB_KEYS.includes(S.activeTab)) switchTab(S.activeTab);
+  } else {
+    currentUser = null;
+    document.getElementById('auth-overlay').classList.remove('hidden');
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+// 認証チェックが完了するまで待つ（onAuthStateChangeが処理する）
+// セッションが既にある場合は即座に発火するので追加処理不要
+// ページロード時のフォールバック（念のため）
+setTimeout(async () => {
+  const { data } = await sb.auth.getSession();
+  if(!data.session){
+    // 未ログイン → オーバーレイはそのまま表示
+    setSyncStatus('err', '未ログイン');
+  }
+}, 500);
+</script>
+</body>
+</html>
