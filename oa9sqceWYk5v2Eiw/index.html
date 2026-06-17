@@ -1120,7 +1120,7 @@ async function loadFromSupabase(){
 // ─── Supabase へ保存（デバウンス3秒）───────────────────
 function scheduleSyncToSupabase(){
   clearTimeout(syncTimer);
-  syncTimer = setTimeout(syncToSupabase, 3000);
+  syncTimer = setTimeout(syncToSupabase, 1000);
   setSyncStatus('syncing', '保存中...');
 }
 
