@@ -134,7 +134,7 @@ select{appearance:none;-webkit-appearance:none}
 .auth-toggle{font-size:12px;color:#7C6F52;text-align:center;margin-top:16px;cursor:pointer}
 .auth-toggle span{color:#4A7C6F;text-decoration:underline;cursor:pointer}
 /* 同期インジケーター */
-#sync-indicator{font-size:11px;font-family:'JetBrains Mono',monospace;color:#7C6F52;display:flex;align-items:center;gap:6px}
+#sync-indicator{font-size:11px;font-family:'JetBrains Mono',monospace;color:#7C6F52;display:flex;align-items:center;gap:6px;transition:opacity .4s ease}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:#2A3545;flex-shrink:0;transition:background .3s}
 .sync-dot.syncing{background:#9B7E4A;animation:pulse .8s infinite}
 .sync-dot.ok{background:#4A7C6F}
@@ -1121,7 +1121,6 @@ async function loadFromSupabase(){
 function scheduleSyncToSupabase(){
   if(isLoading) return; // ロード中は同期しない
   clearTimeout(syncTimer);
-  setSyncStatus('ok', '同期済み');
   syncTimer = setTimeout(syncToSupabase, 1000);
 }
 
@@ -1135,17 +1134,22 @@ async function syncToSupabase(){
         { onConflict: 'user_id' }
       );
     if(error) throw error;
-    setSyncStatus('ok', '同期済み');
+    // 同期完了を一瞬表示して2秒後に消す
+    setSyncStatus('ok', '保存完了 ✓');
+    setTimeout(() => setSyncStatus('idle', ''), 2000);
   } catch(e){
     console.error('sync error', e);
     setSyncStatus('err', 'エラー');
+    setTimeout(() => setSyncStatus('idle', ''), 3000);
   }
 }
 
 function setSyncStatus(status, text){
   const dot = document.getElementById('sync-dot');
+  const indicator = document.getElementById('sync-indicator');
   document.getElementById('sync-text').textContent = text;
   dot.className = 'sync-dot ' + status;
+  indicator.style.opacity = status === 'idle' ? '0' : '1';
 }
 
 // ─── save() をオーバーライドして自動同期 ─────────────────
@@ -1165,7 +1169,7 @@ sb.auth.onAuthStateChange(async (event, session) => {
     dailyReset();
     refreshUI();
     if(S.activeTab && TAB_KEYS.includes(S.activeTab)) switchTab(S.activeTab);
-    setSyncStatus('ok', '同期済み');
+    setSyncStatus('idle', '');
     // 裏でSupabaseから最新データを取得して更新
     loadFromSupabase().then(() => {
       dailyReset();
