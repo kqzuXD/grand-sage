@@ -58,9 +58,11 @@ select{appearance:none;-webkit-appearance:none}
 .bookrow{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
 .bookpageinput{display:flex;gap:8px;margin-top:8px}
 .bookpageinput .inp{margin-bottom:0;flex:1}
+/* カテゴリバッジ */
 .cat-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono',monospace;margin-bottom:8px}
 .techitem{background:#1E2530;border:1px solid #2A3545;border-radius:12px;padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:16px}
 .techicon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+/* Empathy - 入力フォーム付き */
 .actitem{background:#1E2530;border:1px solid #2A3545;border-radius:12px;padding:20px;margin-bottom:12px}
 .actrow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
 .actrow-top{display:flex;justify-content:space-between;align-items:center}
@@ -89,6 +91,7 @@ select{appearance:none;-webkit-appearance:none}
 .conditem{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .condcirc{width:16px;height:16px;border-radius:50%;background:#2A3545;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:9px;color:#F0E6C0}
 .condcirc.ok{background:#4A7C6F}
+/* ── CALENDAR ── */
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .cal-nav{background:none;border:1px solid #2A3545;border-radius:6px;color:#F0E6C0;padding:6px 12px;cursor:pointer;font-size:14px;transition:border-color .2s}
 .cal-nav:hover{border-color:#4A7C6F}
@@ -104,6 +107,7 @@ select{appearance:none;-webkit-appearance:none}
 .cal-day-num{font-size:11px;line-height:1}
 .cal-dots{display:flex;gap:1px;flex-wrap:wrap;justify-content:center;max-width:20px}
 .cal-dot{width:3px;height:3px;border-radius:50%}
+/* 日別詳細パネル */
 .day-detail{background:#1E2530;border:1px solid #2A3545;border-radius:12px;padding:20px;margin-top:16px}
 .day-detail-title{font-family:'Cinzel',serif;font-size:13px;color:#9B7E4A;margin-bottom:14px;letter-spacing:.08em}
 .detail-section{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #2A3545}
@@ -118,6 +122,8 @@ select{appearance:none;-webkit-appearance:none}
   #main{padding:16px 12px}
   .cal-day{font-size:11px}
 }
+
+/* ── AUTH ── */
 #auth-overlay{position:fixed;inset:0;background:#0A0C0F;z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px}
 #auth-overlay.hidden{display:none}
 .auth-box{background:#1E2530;border:1px solid #2A3545;border-radius:16px;padding:40px 32px;width:100%;max-width:380px}
@@ -127,27 +133,13 @@ select{appearance:none;-webkit-appearance:none}
 .auth-err{font-size:12px;color:#8B4A4A;text-align:center;margin-top:12px;min-height:18px}
 .auth-toggle{font-size:12px;color:#7C6F52;text-align:center;margin-top:16px;cursor:pointer}
 .auth-toggle span{color:#4A7C6F;text-decoration:underline;cursor:pointer}
+/* 同期インジケーター */
 #sync-indicator{font-size:11px;font-family:'JetBrains Mono',monospace;color:#7C6F52;display:flex;align-items:center;gap:6px;transition:opacity .4s ease}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:#2A3545;flex-shrink:0;transition:background .3s}
 .sync-dot.syncing{background:#9B7E4A;animation:pulse .8s infinite}
 .sync-dot.ok{background:#4A7C6F}
 .sync-dot.err{background:#8B4A4A}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* ── JOURNAL ── */
-.journal-entry{background:#1E2530;border:1px solid #2A3545;border-radius:12px;padding:20px;margin-bottom:12px;cursor:pointer;transition:border-color .2s}
-.journal-entry:hover{border-color:#4A7C6F44}
-.journal-entry.today-entry{border-color:#9B7E4A44;background:linear-gradient(135deg,#1E2530 0%,#1A1E28 100%)}
-.journal-date{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.12em;color:#7C6F52;margin-bottom:8px}
-.journal-preview{font-size:13px;color:#B0A080;line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.journal-full{font-size:13px;color:#F0E6C0;line-height:1.9;white-space:pre-wrap}
-.journal-xp-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono',monospace;background:#9B7E4A22;border:1px solid #9B7E4A44;color:#9B7E4A;margin-bottom:10px}
-.ai-loading{display:flex;align-items:center;gap:10px;color:#7C6F52;font-size:13px;font-family:'Cinzel',serif;letter-spacing:.05em;padding:12px 0}
-.ai-loading-dot{width:6px;height:6px;border-radius:50%;background:#9B7E4A;animation:aiPulse 1.2s ease-in-out infinite}
-.ai-loading-dot:nth-child(2){animation-delay:.2s}
-.ai-loading-dot:nth-child(3){animation-delay:.4s}
-@keyframes aiPulse{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
-
 </style>
 </head>
 <body>
@@ -190,7 +182,6 @@ select{appearance:none;-webkit-appearance:none}
   <button class="navbtn" onclick="switchTab('tech')">TECH</button>
   <button class="navbtn" onclick="switchTab('empathy')">EMPATHY</button>
   <button class="navbtn" onclick="switchTab('dignity')">DIGNITY</button>
-  <button class="navbtn" onclick="switchTab('journal')">JOURNAL</button>
   <button class="navbtn" onclick="switchTab('calendar')">CALENDAR</button>
   <button class="navbtn" onclick="switchTab('grand')">GRAND SAGE</button>
 </div>
@@ -331,6 +322,7 @@ select{appearance:none;-webkit-appearance:none}
 
 <!-- EMPATHY -->
 <div id="tab-empathy" class="tab">
+  <!-- 人の意見を聞く -->
   <div class="actitem">
     <div class="actrow-top" style="margin-bottom:4px">
       <div>
@@ -347,6 +339,7 @@ select{appearance:none;-webkit-appearance:none}
       <button class="btn btn-primary" id="emp-listen-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('listen')">記録する</button>
     </div>
   </div>
+  <!-- 異なる価値観 -->
   <div class="actitem">
     <div class="actrow-top" style="margin-bottom:4px">
       <div>
@@ -363,6 +356,7 @@ select{appearance:none;-webkit-appearance:none}
       <button class="btn btn-primary" id="emp-diff-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('different')">記録する</button>
     </div>
   </div>
+  <!-- 考えが変化 -->
   <div class="actitem">
     <div class="actrow-top" style="margin-bottom:4px">
       <div>
@@ -405,22 +399,6 @@ select{appearance:none;-webkit-appearance:none}
       <div style="font-size:28px;margin-bottom:8px">✨</div>
       <div style="font-family:'Cinzel',serif;color:#9B7E4A">本日の品格を全て達成</div>
     </div>
-  </div>
-</div>
-
-
-<!-- JOURNAL -->
-<div id="tab-journal" class="tab">
-  <div class="card card-gold">
-    <div class="cardtitle">📜 今日の冒険記録を生成</div>
-    <div style="font-size:12px;color:#7C6F52;margin-bottom:14px;line-height:1.6">今日の活動をもとに、賢者AIが冒険の記録を綴ります。</div>
-    <div id="journal-today-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
-    <button class="btn btn-gold" id="journal-gen-btn" onclick="generateJournal()" style="width:100%">✦ 今日の記録を生成する</button>
-    <div id="journal-gen-area" style="margin-top:16px"></div>
-  </div>
-  <div style="margin-top:8px">
-    <div class="cardtitle" style="margin-bottom:12px">📚 過去の冒険記録</div>
-    <div id="journal-list"></div>
   </div>
 </div>
 
@@ -471,6 +449,9 @@ select{appearance:none;-webkit-appearance:none}
 </div><!-- /main -->
 
 <script>
+// ═══════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════
 const ALL_TITLES = [
   { level:1,    label:"Apprentice",     jp:"見習い",         desc:"旅の始まり。知を求め、最初の一歩を踏み出した者",           color:"#7C6F52" },
   { level:10,   label:"Novice",         jp:"初学者",         desc:"基礎に触れ、学ぶ喜びを知り始めた者",                      color:"#7C6F52" },
@@ -509,6 +490,9 @@ const GRAND_SAGE_TARGET = { level:1000, wisdom:300, books:24, thoughts:100, work
 function requiredXP(lv){ return lv*lv*20; }
 function getTitle(lv){ let t=ALL_TITLES[0]; for(const r of ALL_TITLES){ if(lv>=r.level) t=r; } return t; }
 
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
 const DEFAULT = {
   xp:0, level:1, wisdom:0, thoughtCount:0, workCount:0,
   books:[], thoughts:[],
@@ -517,8 +501,8 @@ const DEFAULT = {
   techLog:{pushCount:0,lastPushDate:null},
   empathy:{listen:0,different:0,changed:false,lastDate:null},
   dignity:{skin:false,clean:false,groom:false,lastDate:null},
+  // 日別ログ: { "2025-06-17": { xpGained, books:[{title,pct}], thoughts:[{summary}], empathy:[{text}], dignity:[], tech:[] } }
   dayLog:{},
-  journals:{},
   lastDaily:null,
 };
 
@@ -527,8 +511,9 @@ let S = (()=>{
   catch{ return {...DEFAULT}; }
 })();
 
-function save(){ localStorage.setItem('gsj_v1', JSON.stringify(S)); scheduleSyncToSupabase(); }
+function save(){ localStorage.setItem('gsj_v1', JSON.stringify(S)); }
 
+// ─── 日別ログ helper ───────────────────────────────────────
 function todayKey(){ return new Date().toISOString().slice(0,10); }
 
 function pushDayLog(key, entry){
@@ -544,6 +529,9 @@ function addDayXP(amount){
   S.dayLog[dk].xpGained = (S.dayLog[dk].xpGained||0) + amount;
 }
 
+// ═══════════════════════════════════════════════════════════
+// DAILY RESET
+// ═══════════════════════════════════════════════════════════
 function dailyReset(){
   const today = new Date().toDateString();
   if(S.lastDaily !== today){
@@ -553,11 +541,14 @@ function dailyReset(){
     S.dignity = {skin:false, clean:false, groom:false, lastDate:today};
     S.techLog = {...S.techLog, pushCount:0, lastPushDate:today};
     S._dailyBonusToday = null;
-    localStorage.setItem('gsj_v1', JSON.stringify(S));
-    scheduleSyncToSupabase();
+    localStorage.setItem('gsj_v1', JSON.stringify(S)); // Supabase同期はしない
+    scheduleSyncToSupabase(); // isLoadingがfalseの時だけ動く
   }
 }
 
+// ═══════════════════════════════════════════════════════════
+// XP
+// ═══════════════════════════════════════════════════════════
 function gainXP(amount){
   amount = Math.round(amount);
   let xp=S.xp+amount, level=S.level, leveledUp=false;
@@ -585,6 +576,9 @@ function checkDaily(){
   }
 }
 
+// ═══════════════════════════════════════════════════════════
+// UI REFRESH
+// ═══════════════════════════════════════════════════════════
 function refreshUI(){
   const {xp,level,wisdom,dailyProgress,streak,books,thoughtCount,workCount}=S;
   const needed=requiredXP(level);
@@ -605,6 +599,7 @@ function refreshUI(){
   document.getElementById('h-works').textContent=workCount+'件';
   if(streak.count>0){ const el=document.getElementById('h-streak'); el.textContent=`🔥 ${streak.count}日連続`; el.style.display='block'; }
 
+  // Daily quests
   [{key:'read',id:'dq-read',cid:'dqc-read'},{key:'think',id:'dq-think',cid:'dqc-think'},{key:'dev',id:'dq-dev',cid:'dqc-dev'}].forEach(q=>{
     const done=dailyProgress[q.key];
     document.getElementById(q.id).className='quest'+(done?' done':'');
@@ -618,6 +613,7 @@ function refreshUI(){
   bonus.style.borderColor=allDq?'rgba(155,126,74,.4)':'rgba(124,111,82,.27)';
   bonus.style.color=allDq?'#9B7E4A':'#7C6F52';
 
+  // Tech
   const today=new Date().toDateString();
   const todayPush=S.techLog.lastPushDate===today?S.techLog.pushCount:0;
   document.getElementById('push-sub').textContent=`本日 ${todayPush}/5 回`;
@@ -627,6 +623,7 @@ function refreshUI(){
   const devBtn=document.getElementById('tech-dev-btn');
   devBtn.disabled=devDone; devBtn.className='btn '+(devDone?'btn-secondary':'btn-primary'); devBtn.textContent=devDone?'完了':'記録';
 
+  // Empathy
   const sameEmp=S.empathy.lastDate===today;
   const lc=sameEmp?S.empathy.listen:0, dc=sameEmp?S.empathy.different:0, chg=sameEmp&&S.empathy.changed;
   updateEmpathyUI('listen',lc,3); updateEmpathyUI('diff',dc,3);
@@ -634,6 +631,7 @@ function refreshUI(){
   const chgBtn=document.getElementById('emp-changed-btn');
   chgBtn.disabled=chg; chgBtn.className='btn '+(chg?'btn-secondary':'btn-primary'); chgBtn.textContent=chg?'上限到達':'記録する';
 
+  // Dignity
   const sameDig=S.dignity.lastDate===today;
   ['skin','clean','groom'].forEach(k=>{
     const done=sameDig&&S.dignity[k];
@@ -655,6 +653,9 @@ function updateEmpathyUI(key,count,max){
   btn.disabled=done; btn.className='btn '+(done?'btn-secondary':'btn-primary'); btn.textContent=done?'上限到達':'記録する';
 }
 
+// ═══════════════════════════════════════════════════════════
+// BOOKS
+// ═══════════════════════════════════════════════════════════
 function addBook(){
   const title=document.getElementById('book-title').value.trim();
   const total=parseInt(document.getElementById('book-pages').value);
@@ -706,6 +707,7 @@ function updatePage(id){
   if(cur>=book.totalPages&&!book.done){ xpGain+=Math.round(100*cat.mult); done=true; }
   book.currentPage=cur; book.done=done;
   S.dailyProgress.read=true;
+  // 日別ログ
   pushDayLog('books', { title:book.title, cat:cat.label, pct:curPct, xp:xpGain, done });
   save();
   if(xpGain>0) gainXP(xpGain); else renderBooks();
@@ -713,6 +715,9 @@ function updatePage(id){
   checkDaily();
 }
 
+// ═══════════════════════════════════════════════════════════
+// THOUGHT
+// ═══════════════════════════════════════════════════════════
 function refreshThoughtSelect(){
   const sel=document.getElementById('th-book');
   const cur=sel.value;
@@ -772,6 +777,9 @@ function renderThoughtLog(){
   }</div>`;
 }
 
+// ═══════════════════════════════════════════════════════════
+// TECH
+// ═══════════════════════════════════════════════════════════
 function logDev(){
   S.dailyProgress.dev=true;
   pushDayLog('tech',{type:'開発30分',xp:10});
@@ -792,10 +800,14 @@ function logFeature(){
   save(); gainXP(100);
 }
 
+// ═══════════════════════════════════════════════════════════
+// EMPATHY（テキスト必須）
+// ═══════════════════════════════════════════════════════════
 function logEmpathy(type){
   const today=new Date().toDateString();
   const sameDay=S.empathy.lastDate===today;
   const e={...S.empathy,lastDate:today};
+
   if(type==='listen'){
     const txt=document.getElementById('emp-listen-text').value.trim();
     if(!txt){ shakeTa('emp-listen-text'); return; }
@@ -833,6 +845,9 @@ function shakeTa(id){
   setTimeout(()=>el.classList.remove('required-err'),1500);
 }
 
+// ═══════════════════════════════════════════════════════════
+// DIGNITY
+// ═══════════════════════════════════════════════════════════
 function logDignity(key,xp){
   const today=new Date().toDateString();
   if(S.dignity.lastDate===today&&S.dignity[key]) return;
@@ -842,22 +857,31 @@ function logDignity(key,xp){
   save(); gainXP(xp);
 }
 
+// ═══════════════════════════════════════════════════════════
+// CALENDAR
+// ═══════════════════════════════════════════════════════════
 let calYear=new Date().getFullYear(), calMonth=new Date().getMonth(), calSelected=null;
 
 function renderCalendar(){
   const now=new Date();
   const todayStr=now.toISOString().slice(0,10);
   document.getElementById('cal-month-label').textContent=`${calYear}年 ${calMonth+1}月`;
+
   const firstDay=new Date(calYear,calMonth,1).getDay();
   const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+
   let html='';
+  // 空白
   for(let i=0;i<firstDay;i++) html+=`<div class="cal-day empty"></div>`;
+
   for(let d=1;d<=daysInMonth;d++){
     const dateStr=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const log=S.dayLog[dateStr];
     const isToday=dateStr===todayStr;
     const isSel=dateStr===calSelected;
     const hasData=!!log;
+
+    // ドット生成
     let dots='';
     if(log){
       if(log.books&&log.books.length)   dots+=`<div class="cal-dot" style="background:#9B7E4A"></div>`;
@@ -866,15 +890,18 @@ function renderCalendar(){
       if(log.empathy&&log.empathy.length) dots+=`<div class="cal-dot" style="background:#7C9F8A"></div>`;
       if(log.dignity&&log.dignity.length) dots+=`<div class="cal-dot" style="background:#8A7C9F"></div>`;
     }
+
     let cls='cal-day';
     if(hasData) cls+=' has-data';
     if(isToday) cls+=' today';
     if(isSel) cls+=' selected';
+
     html+=`<div class="${cls}" onclick="selectCalDay('${dateStr}')">
       <div class="cal-day-num" style="color:${isToday?'#9B7E4A':hasData?'#F0E6C0':'#2A3545'}">${d}</div>
       ${dots?`<div class="cal-dots">${dots}</div>`:''}
     </div>`;
   }
+
   document.getElementById('cal-grid').innerHTML=html;
   renderCalDetail();
 }
@@ -889,35 +916,55 @@ function renderCalDetail(){
   if(!calSelected){ el.innerHTML=''; return; }
   const log=S.dayLog[calSelected];
   if(!log){ el.innerHTML=`<div class="day-detail"><div class="day-detail-title">${calSelected}</div><div style="color:#7C6F52;font-size:13px">この日の記録はありません</div></div>`; return; }
+
   const d=new Date(calSelected+'T00:00:00');
   const dateLabel=d.toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
   let html=`<div class="day-detail"><div class="day-detail-title">📅 ${dateLabel}</div>`;
+
+  // XP合計
   html+=`<div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9B7E4A;margin-bottom:12px">本日獲得 +${(log.xpGained||0).toLocaleString()} XP</div>`;
+
+  // 読書
   if(log.books&&log.books.length){
     html+=`<div class="detail-section"><div class="detail-section-label">📖 読書</div>`;
-    log.books.forEach(b=>{ html+=`<div class="detail-item">${escHtml(b.title)} <span style="color:#7C6F52;font-size:11px">[${b.cat}]</span> → ${b.pct}%${b.done?' ✓読了':''} <span class="detail-xp">+${b.xp}XP</span></div>`; });
+    log.books.forEach(b=>{
+      html+=`<div class="detail-item">${escHtml(b.title)} <span style="color:#7C6F52;font-size:11px">[${b.cat}]</span> → ${b.pct}%${b.done?' ✓読了':''} <span class="detail-xp">+${b.xp}XP</span></div>`;
+    });
     html+=`</div>`;
   }
+
+  // 思考
   if(log.thoughts&&log.thoughts.length){
     html+=`<div class="detail-section"><div class="detail-section-label">🧠 思考ログ</div>`;
-    log.thoughts.forEach(t=>{ html+=`<div class="detail-item">${escHtml(t.summary)}${t.summary.length>=80?'…':''} <span class="detail-xp">+${t.xp}XP${t.wisdom?' +Wisdom':''}</span></div>`; });
+    log.thoughts.forEach(t=>{
+      html+=`<div class="detail-item">${escHtml(t.summary)}${t.summary.length>=80?'…':''} <span class="detail-xp">+${t.xp}XP${t.wisdom?' +Wisdom':''}</span></div>`;
+    });
     html+=`</div>`;
   }
+
+  // 開発
   if(log.tech&&log.tech.length){
     html+=`<div class="detail-section"><div class="detail-section-label">⚙️ 技術</div>`;
     log.tech.forEach(t=>{ html+=`<div class="detail-item">${t.type} <span class="detail-xp">+${t.xp}XP</span></div>`; });
     html+=`</div>`;
   }
+
+  // 共感
   if(log.empathy&&log.empathy.length){
     html+=`<div class="detail-section"><div class="detail-section-label">👂 共感</div>`;
-    log.empathy.forEach(e=>{ html+=`<div class="detail-item"><span style="color:#7C9F8A">${e.type}</span> — ${escHtml(e.text.slice(0,60))}${e.text.length>60?'…':''} <span class="detail-xp">+${e.xp}XP</span></div>`; });
+    log.empathy.forEach(e=>{
+      html+=`<div class="detail-item"><span style="color:#7C9F8A">${e.type}</span> — ${escHtml(e.text.slice(0,60))}${e.text.length>60?'…':''} <span class="detail-xp">+${e.xp}XP</span></div>`;
+    });
     html+=`</div>`;
   }
+
+  // 品格
   if(log.dignity&&log.dignity.length){
     html+=`<div class="detail-section"><div class="detail-section-label">✨ 品格</div>`;
     log.dignity.forEach(d=>{ html+=`<div class="detail-item">${d.type} <span class="detail-xp">+${d.xp}XP</span></div>`; });
     html+=`</div>`;
   }
+
   html+=`</div>`;
   el.innerHTML=html;
 }
@@ -925,6 +972,9 @@ function renderCalDetail(){
 function calPrev(){ calMonth--; if(calMonth<0){ calMonth=11; calYear--; } renderCalendar(); }
 function calNext(){ calMonth++; if(calMonth>11){ calMonth=0; calYear++; } renderCalendar(); }
 
+// ═══════════════════════════════════════════════════════════
+// GRAND SAGE
+// ═══════════════════════════════════════════════════════════
 function renderGrandSage(){
   const {level,wisdom,books,thoughtCount,workCount}=S;
   const booksRead=books.filter(b=>b.done).length;
@@ -950,6 +1000,9 @@ function renderGrandSage(){
   }).join('');
 }
 
+// ═══════════════════════════════════════════════════════════
+// TITLE TABLE
+// ═══════════════════════════════════════════════════════════
 function renderTitleTable(){
   const lv=S.level;
   document.getElementById('title-table-body').innerHTML=ALL_TITLES.map((t,i)=>{
@@ -966,7 +1019,10 @@ function renderTitleTable(){
   }).join('');
 }
 
-const TAB_KEYS=['home','books','thought','tech','empathy','dignity','journal','calendar','grand'];
+// ═══════════════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════════════
+const TAB_KEYS=['home','books','thought','tech','empathy','dignity','calendar','grand'];
 
 function switchTab(key){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -976,326 +1032,184 @@ function switchTab(key){
   document.querySelectorAll('.navbtn')[idx].classList.add('active');
   S.activeTab=key;
   if(key==='calendar') renderCalendar();
-  if(key==='journal'){
-    renderJournalTodayTags();
-    const dk=todayKey();
-    if(!S.journals) S.journals={};
-    if(S.journals[dk]){
-      const j=S.journals[dk];
-      document.getElementById('journal-gen-area').innerHTML=`<div style="border-top:1px solid #2A3545;padding-top:16px;margin-top:4px">
-        <div class="journal-full">${escHtml(j.text)}</div>
-        <div style="margin-top:14px;font-size:11px;color:#4A7C6F;font-family:'JetBrains Mono',monospace">✦ 本日の記録（保存済み）</div>
-      </div>`;
-      document.getElementById('journal-gen-btn').textContent='✦ 再生成する';
-    }
-    renderJournalList();
-  }
 }
 function goTab(key){ switchTab(key); }
 
+// ═══════════════════════════════════════════════════════════
+// UTIL
+// ═══════════════════════════════════════════════════════════
 function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-// ── JOURNAL ──────────────────────────────────────────────
-/* ── JOURNAL ── */
-function buildTodaySummary(){
-  const dk=todayKey();
-  const log=S.dayLog[dk];
-  if(!log) return null;
-  const parts=[];
-  if(log.books&&log.books.length) parts.push('【読書】'+log.books.map(b=>`「${b.title}」${b.pct}%${b.done?'（読了）':''}`).join('、'));
-  if(log.thoughts&&log.thoughts.length){
-    parts.push(`【思考ログ】${log.thoughts.length}件を記録`);
-    const ws=log.thoughts.filter(t=>t.wisdom).length;
-    if(ws>0) parts.push(`Wisdom ${ws}ポイント獲得`);
-    parts.push('思考の一部：'+log.thoughts.slice(0,2).map(t=>t.summary.slice(0,40)).join(' / '));
-  }
-  if(log.tech&&log.tech.length) parts.push('【技術】'+log.tech.map(t=>t.type).join('、'));
-  if(log.empathy&&log.empathy.length) parts.push('【共感】'+log.empathy.map(e=>e.type+'：'+e.text.slice(0,30)).join('、'));
-  if(log.dignity&&log.dignity.length) parts.push('【品格】'+log.dignity.map(d=>d.type).join('、'));
-  return { text:parts.join('\n'), xp:log.xpGained||0, level:S.level, titleLabel:getTitle(S.level).label+' — '+getTitle(S.level).jp, isEmpty:parts.length===0 };
-}
+// ═══════════════════════════════════════════════════════════
+// SUPABASE
+// ═══════════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://wkiumimawnshjblneiea.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndraXVtaW1hd25zaGpibG5laWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTc3NjIsImV4cCI6MjA5NzI5Mzc2Mn0.iloRwxbuSbIzBWkPpteybWxk7HyF1kJ1KQX7Q4lIh2M';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-function renderJournalTodayTags(){
-  const dk=todayKey();
-  const log=S.dayLog[dk];
-  const el=document.getElementById('journal-today-tags');
-  if(!log){ el.innerHTML=''; return; }
-  const tags=[];
-  if(log.books&&log.books.length) tags.push(`📖 読書 ${log.books.length}件`);
-  if(log.thoughts&&log.thoughts.length) tags.push(`🧠 思考 ${log.thoughts.length}件`);
-  if(log.tech&&log.tech.length) tags.push(`⚙️ 技術 ${log.tech.length}件`);
-  if(log.empathy&&log.empathy.length) tags.push(`👂 共感 ${log.empathy.length}件`);
-  if(log.dignity&&log.dignity.length) tags.push(`✨ 品格 ${log.dignity.length}件`);
-  const xp=log.xpGained||0;
-  el.innerHTML=(xp>0?`<span class="journal-xp-badge">本日 +${xp.toLocaleString()} XP</span>`:'')
-    +tags.map(t=>`<span class="tag" style="background:#2A354566;border:1px solid #2A3545;color:#F0E6C0">${t}</span>`).join('');
-}
+let currentUser = null;
+let syncTimer = null;
+let authMode = 'signin'; // 'signin' | 'signup'
+let isLoading = false; // ロード中フラグ
 
-async function generateJournal(){
-  const summary=buildTodaySummary();
-  const btn=document.getElementById('journal-gen-btn');
-  const area=document.getElementById('journal-gen-area');
-  if(!summary||summary.isEmpty){
-    area.innerHTML=`<div style="color:#7C6F52;font-size:13px;text-align:center;padding:16px 0">今日はまだ活動が記録されていません。<br>各タブで活動を記録してから生成してください。</div>`;
-    return;
-  }
-  btn.disabled=true;
-  area.innerHTML=`<div class="ai-loading"><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div><div class="ai-loading-dot"></div><span>賢者が記録を綴っています……</span></div>`;
-  const prompt=`あなたは「Grand Sage Journey」という自己成長ゲームの記録係の賢者です。
-冒険者の今日の記録をもとに、RPG風の「冒険日誌」を日本語で書いてください。
-
-【今日の冒険者データ】
-称号：${summary.titleLabel}（Level ${summary.level}）
-獲得XP：${summary.xp}
-活動記録：
-${summary.text}
-
-【執筆ルール】
-- 300〜400字程度の格調ある「賢者の語り口」で書く
-- 「……」「──」「然り」などRPG賢者らしい文語・雅語を交える
-- 冒険者への洞察・励ましを含める
-- 今日の具体的な活動を織り込む（抽象論だけにしない）
-- 段落を2〜3つ設ける
-- タイトル不要。本文のみ書く`;
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})
-    });
-    const data=await res.json();
-    const text=(data.content&&data.content[0])?data.content[0].text:'記録の生成に失敗しました。';
-    const dk=todayKey();
-    if(!S.journals) S.journals={};
-    S.journals[dk]={date:dk,text,xp:summary.xp,level:summary.level,titleLabel:summary.titleLabel,createdAt:Date.now()};
-    save();
-    area.innerHTML=`<div style="border-top:1px solid #2A3545;padding-top:16px;margin-top:4px">
-      <div class="journal-full">${escHtml(text)}</div>
-      <div style="margin-top:14px;font-size:11px;color:#4A7C6F;font-family:'JetBrains Mono',monospace">✦ 今日の記録として保存されました</div>
-    </div>`;
-    btn.textContent='✦ 再生成する';
-    btn.disabled=false;
-    renderJournalList();
-  }catch(e){
-    area.innerHTML=`<div style="color:#8B4A4A;font-size:13px;padding:8px 0">生成中にエラーが発生しました。もう一度お試しください。</div>`;
-    btn.disabled=false;
-  }
-}
-
-function renderJournalList(){
-  const el=document.getElementById('journal-list');
-  if(!el) return;
-  if(!S.journals||Object.keys(S.journals).length===0){
-    el.innerHTML=`<div class="empty"><div class="emptyi">📜</div><div class="emptytext">まだ冒険記録がありません</div></div>`;
-    return;
-  }
-  const sorted=Object.values(S.journals).sort((a,b)=>b.date.localeCompare(a.date));
-  const dk=todayKey();
-  el.innerHTML=sorted.map(j=>{
-    const d=new Date(j.date+'T00:00:00');
-    const dateStr=d.toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
-    const isToday=j.date===dk;
-    return `<div class="journal-entry${isToday?' today-entry':''}" onclick="toggleJournalEntry('${j.date}')">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <div class="journal-date">📅 ${dateStr}${isToday?' ─ 今日':''}</div>
-        <div style="display:flex;gap:6px;align-items:center">
-          <span style="font-size:11px;font-family:'JetBrains Mono',monospace;color:#9B7E4A">+${j.xp}XP</span>
-          <span style="font-size:11px;color:#4A7C6F;font-family:'Cinzel',serif">Lv${j.level}</span>
-        </div>
-      </div>
-      <div class="journal-preview" id="jpreview-${j.date}">${escHtml(j.text.slice(0,100))}…</div>
-      <div class="journal-full" id="jfull-${j.date}" style="display:none">${escHtml(j.text)}</div>
-      <div style="margin-top:8px;font-size:10px;color:#4A7C6F;font-family:'Cinzel',serif;letter-spacing:.06em">${escHtml(j.titleLabel)}</div>
-    </div>`;
-  }).join('');
-}
-
-function toggleJournalEntry(date){
-  const p=document.getElementById('jpreview-'+date);
-  const f=document.getElementById('jfull-'+date);
-  if(!p||!f) return;
-  const expanded=f.style.display!=='none';
-  p.style.display=expanded?'':'none';
-  f.style.display=expanded?'none':'';
-}
-
-// ── SUPABASE ──────────────────────────────────────────────
-const SUPABASE_URL='https://wkiumimawnshjblneiea.supabase.co';
-const SUPABASE_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndraXVtaW1hd25zaGpibG5laWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTc3NjIsImV4cCI6MjA5NzI5Mzc2Mn0.iloRwxbuSbIzBWkPpteybWxk7HyF1kJ1KQX7Q4lIh2M';
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
-
-let currentUser=null;
-let syncTimer=null;
-let authMode='signin';
-let isLoading=false;
-
+// ─── 認証モード切替 ───────────────────────────────────────
 function toggleAuthMode(){
-  authMode=authMode==='signin'?'signup':'signin';
-  document.getElementById('auth-mode-label').textContent=authMode==='signin'?'サインイン':'新規登録';
-  document.getElementById('auth-submit-btn').textContent=authMode==='signin'?'サインイン':'登録する';
-  document.getElementById('auth-toggle-text').innerHTML=authMode==='signin'?'アカウントがない？ <span onclick="toggleAuthMode()">新規登録</span>':'すでにアカウントがある？ <span onclick="toggleAuthMode()">サインイン</span>';
-  document.getElementById('auth-err').textContent='';
+  authMode = authMode === 'signin' ? 'signup' : 'signin';
+  document.getElementById('auth-mode-label').textContent = authMode === 'signin' ? 'サインイン' : '新規登録';
+  document.getElementById('auth-submit-btn').textContent = authMode === 'signin' ? 'サインイン' : '登録する';
+  document.getElementById('auth-toggle-text').innerHTML = authMode === 'signin'
+    ? 'アカウントがない？ <span onclick="toggleAuthMode()">新規登録</span>'
+    : 'すでにアカウントがある？ <span onclick="toggleAuthMode()">サインイン</span>';
+  document.getElementById('auth-err').textContent = '';
 }
 
 async function authSubmit(){
-  const email=document.getElementById('auth-email').value.trim();
-  const password=document.getElementById('auth-password').value;
-  const errEl=document.getElementById('auth-err');
-  errEl.textContent='';
-  if(!email||!password){ errEl.textContent='メールとパスワードを入力してください'; return; }
-  const btn=document.getElementById('auth-submit-btn');
-  btn.disabled=true; btn.textContent='...';
-  try{
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-err');
+  errEl.textContent = '';
+  if(!email || !password){ errEl.textContent = 'メールとパスワードを入力してください'; return; }
+  const btn = document.getElementById('auth-submit-btn');
+  btn.disabled = true; btn.textContent = '...';
+  try {
     let res;
-    if(authMode==='signin') res=await sb.auth.signInWithPassword({email,password});
-    else res=await sb.auth.signUp({email,password});
+    if(authMode === 'signin'){
+      res = await sb.auth.signInWithPassword({ email, password });
+    } else {
+      res = await sb.auth.signUp({ email, password });
+    }
     if(res.error) throw res.error;
-  }catch(e){
-    errEl.textContent=e.message||'エラーが発生しました';
-    btn.disabled=false;
-    btn.textContent=authMode==='signin'?'サインイン':'登録する';
+    // onAuthStateChangeが拾う
+  } catch(e){
+    errEl.textContent = e.message || 'エラーが発生しました';
+    btn.disabled = false;
+    btn.textContent = authMode === 'signin' ? 'サインイン' : '登録する';
   }
 }
 
 async function signOut(){
   await sb.auth.signOut();
-  currentUser=null;
+  currentUser = null;
   document.getElementById('auth-overlay').classList.remove('hidden');
 }
 
+// ─── Supabase からロード ─────────────────────────────────
 async function loadFromSupabase(){
   if(!currentUser) return;
-  isLoading=true;
-  try{
-    const{data,error}=await sb.from('game_state').select('state,updated_at').eq('user_id',currentUser.id).single();
-    if(error&&error.code!=='PGRST116') throw error;
-    if(data&&data.state){ S={...DEFAULT,...data.state}; localStorage.setItem('gsj_v1',JSON.stringify(S)); }
-    setSyncStatus('ok','同期済み');
-  }catch(e){ console.error('load error',e); setSyncStatus('err','エラー'); }
-  finally{ isLoading=false; }
+  isLoading = true;
+  try {
+    const { data, error } = await sb
+      .from('game_state')
+      .select('state, updated_at')
+      .eq('user_id', currentUser.id)
+      .single();
+    if(error && error.code !== 'PGRST116') throw error;
+    if(data && data.state){
+      S = { ...DEFAULT, ...data.state };
+      localStorage.setItem('gsj_v1', JSON.stringify(S));
+    }
+    setSyncStatus('ok', '同期済み');
+  } catch(e){
+    console.error('load error', e);
+    setSyncStatus('err', 'エラー');
+  } finally {
+    isLoading = false;
+  }
 }
 
+// ─── Supabase へ保存（デバウンス1秒、体感は即時）────────
 function scheduleSyncToSupabase(){
-  if(isLoading) return;
+  if(isLoading) return; // ロード中は同期しない
   clearTimeout(syncTimer);
-  syncTimer=setTimeout(syncToSupabase,1000);
+  syncTimer = setTimeout(syncToSupabase, 1000);
 }
 
 async function syncToSupabase(){
   if(!currentUser) return;
-  try{
-    const{error}=await sb.from('game_state').upsert({user_id:currentUser.id,state:S,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+  try {
+    const { error } = await sb
+      .from('game_state')
+      .upsert(
+        { user_id: currentUser.id, state: S, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id' }
+      );
     if(error) throw error;
-    setSyncStatus('ok','保存完了 ✓');
-    setTimeout(()=>setSyncStatus('idle',''),2000);
-  }catch(e){ console.error('sync error',e); setSyncStatus('err','エラー'); setTimeout(()=>setSyncStatus('idle',''),3000); }
+    // 同期完了を一瞬表示して2秒後に消す
+    setSyncStatus('ok', '保存完了 ✓');
+    setTimeout(() => setSyncStatus('idle', ''), 2000);
+  } catch(e){
+    console.error('sync error', e);
+    setSyncStatus('err', 'エラー');
+    setTimeout(() => setSyncStatus('idle', ''), 3000);
+  }
 }
 
-function setSyncStatus(status,text){
-  const dot=document.getElementById('sync-dot');
-  const indicator=document.getElementById('sync-indicator');
-  document.getElementById('sync-text').textContent=text;
-  dot.className='sync-dot '+status;
-  indicator.style.opacity=status==='idle'?'0':'1';
+function setSyncStatus(status, text){
+  const dot = document.getElementById('sync-dot');
+  const indicator = document.getElementById('sync-indicator');
+  document.getElementById('sync-text').textContent = text;
+  dot.className = 'sync-dot ' + status;
+  indicator.style.opacity = status === 'idle' ? '0' : '1';
 }
 
-sb.auth.onAuthStateChange(async(event,session)=>{
-  if(session&&session.user){
-    currentUser=session.user;
+// ─── save() をオーバーライドして自動同期 ─────────────────
+const _origSave = save;
+function save(){
+  const s = {...S};
+  localStorage.setItem('gsj_v1', JSON.stringify(s));
+  scheduleSyncToSupabase();
+}
+
+// ─── 認証状態監視 ────────────────────────────────────────
+sb.auth.onAuthStateChange(async (event, session) => {
+  if(session && session.user){
+    currentUser = session.user;
     document.getElementById('auth-overlay').classList.add('hidden');
+    // まずローカルデータで即起動
     dailyReset();
     refreshUI();
-    if(S.activeTab&&TAB_KEYS.includes(S.activeTab)) switchTab(S.activeTab);
-    setSyncStatus('idle','');
-    loadFromSupabase().then(()=>{ dailyReset(); refreshUI(); if(S.activeTab&&TAB_KEYS.includes(S.activeTab)) switchTab(S.activeTab); });
+    if(S.activeTab && TAB_KEYS.includes(S.activeTab)) switchTab(S.activeTab);
+    setSyncStatus('idle', '');
+    // 裏でSupabaseから最新データを取得して更新
+    loadFromSupabase().then(() => {
+      dailyReset();
+      refreshUI();
+      if(S.activeTab && TAB_KEYS.includes(S.activeTab)) switchTab(S.activeTab);
+    });
   } else {
-    currentUser=null;
+    currentUser = null;
     document.getElementById('auth-overlay').classList.remove('hidden');
   }
 });
 
+// ═══════════════════════════════════════════════════════════
+// 0:00 自動リセットタイマー
+// ═══════════════════════════════════════════════════════════
 function scheduleMidnightReset(){
-  const now=new Date();
-  const midnight=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,0);
-  const ms=midnight-now;
-  setTimeout(()=>{ dailyReset(); refreshUI(); scheduleMidnightReset(); },ms);
+  const now = new Date();
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  const msUntilMidnight = midnight - now;
+  setTimeout(() => {
+    dailyReset();
+    refreshUI();
+    scheduleMidnightReset(); // 翌日のリセットをまたセット
+  }, msUntilMidnight);
 }
 scheduleMidnightReset();
 
-setTimeout(async()=>{
-  const{data}=await sb.auth.getSession();
-  if(!data.session) setSyncStatus('err','未ログイン');
-},500);
-
 // ═══════════════════════════════════════════════════════════
-// JOURNAL
+// INIT
 // ═══════════════════════════════════════════════════════════
-function buildTodaySummary(){
-  const dk = todayKey();
-  const log = S.dayLog[dk];
-  if(!log) return null;
-  const parts = [];
-  if(log.books && log.books.length){
-    parts.push('【読書】' + log.books.map(b=>`「${b.title}」${b.pct}%${b.done?'（読了）':''}`).join('、'));
+// 認証チェックが完了するまで待つ（onAuthStateChangeが処理する）
+// セッションが既にある場合は即座に発火するので追加処理不要
+// ページロード時のフォールバック（念のため）
+setTimeout(async () => {
+  const { data } = await sb.auth.getSession();
+  if(!data.session){
+    // 未ログイン → オーバーレイはそのまま表示
+    setSyncStatus('err', '未ログイン');
   }
-  if(log.thoughts && log.thoughts.length){
-    parts.push(`【思考ログ】${log.thoughts.length}件を記録`);
-    const ws = log.thoughts.filter(t=>t.wisdom).length;
-    if(ws > 0) parts.push(`Wisdom ${ws}ポイント獲得`);
-    parts.push('思考の一部：' + log.thoughts.slice(0,2).map(t=>t.summary.slice(0,40)).join(' / '));
-  }
-  if(log.tech && log.tech.length){
-    parts.push('【技術】' + log.tech.map(t=>t.type).join('、'));
-  }
-  if(log.empathy && log.empathy.length){
-    parts.push('【共感】' + log.empathy.map(e=>e.type+'：'+e.text.slice(0,30)).join('、'));
-  }
-  if(log.dignity && log.dignity.length){
-    parts.push('【品格】' + log.dignity.map(d=>d.type).join('、'));
-  }
-  return {
-    text: parts.join('\n'),
-    xp: log.xpGained || 0,
-    level: S.level,
-    titleLabel: getTitle(S.level).label + ' — ' + getTitle(S.level).jp,
-    isEmpty: parts.length === 0
-  };
-}
-
-function renderJournalTodayTags(){
-  const dk = todayKey();
-  const log = S.dayLog[dk];
-  const el = document.getElementById('journal-today-tags');
-  if(!log){ el.innerHTML=''; return; }
-  const tags = [];
-  if(log.books && log.books.length) tags.push(`📖 読書 ${log.books.length}件`);
-  if(log.thoughts && log.thoughts.length) tags.push(`🧠 思考 ${log.thoughts.length}件`);
-  if(log.tech && log.tech.length) tags.push(`⚙️ 技術 ${log.tech.length}件`);
-  if(log.empathy && log.empathy.length) tags.push(`👂 共感 ${log.empathy.length}件`);
-  if(log.dignity && log.dignity.length) tags.push(`✨ 品格 ${log.dignity.length}件`);
-  const xp = log.xpGained || 0;
-  el.innerHTML = (xp > 0 ? `<span class="journal-xp-badge">本日 +${xp.toLocaleString()} XP</span>` : '') +
-    tags.map(t=>`<span class="tag" style="background:#2A354566;border:1px solid #2A3545;color:#F0E6C0">${t}</span>`).join('');
-}
-const _origSwitch = switchTab;
-function switchTab(key){
-  _origSwitch(key);
-  if(key === 'journal'){
-    renderJournalTodayTags();
-    const dk = todayKey();
-    if(!S.journals) S.journals = {};
-    if(S.journals[dk]){
-      const j = S.journals[dk];
-      document.getElementById('journal-gen-area').innerHTML = `<div style="border-top:1px solid #2A3545;padding-top:16px;margin-top:4px">
-        <div class="journal-full">${escHtml(j.text)}</div>
-        <div style="margin-top:14px;font-size:11px;color:#4A7C6F;font-family:'JetBrains Mono',monospace">✦ 本日の記録（保存済み）</div>
-      </div>`;
-      document.getElementById('journal-gen-btn').textContent = '✦ 再生成する';
-    }
-    renderJournalList();
-  }
-}
-
+}, 500);
 </script>
 </body>
 </html>
