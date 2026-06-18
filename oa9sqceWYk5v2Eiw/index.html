@@ -183,6 +183,7 @@ select{appearance:none;-webkit-appearance:none}
   <button class="navbtn" onclick="switchTab('empathy')">EMPATHY</button>
   <button class="navbtn" onclick="switchTab('dignity')">DIGNITY</button>
   <button class="navbtn" onclick="switchTab('calendar')">CALENDAR</button>
+  <button class="navbtn" onclick="switchTab('news')">NEWS</button>
   <button class="navbtn" onclick="switchTab('grand')">GRAND SAGE</button>
 </div>
 
@@ -402,6 +403,24 @@ select{appearance:none;-webkit-appearance:none}
   </div>
 </div>
 
+<!-- NEWS -->
+<div id="tab-news" class="tab">
+  <div class="card">
+    <div class="cardtitle">📰 ニュース感想を記録する</div>
+    <div style="font-size:11px;color:#7C6F52;margin-bottom:6px">タイトル（任意）</div>
+    <input class="inp" id="news-title" placeholder="記事タイトルやトピック">
+    <div class="charcnt ng" id="news-cnt"><span>感想 <span style="color:#9B7E4A">50字+10XP / 150字+20XP / 300字+35XP</span></span><span id="news-n" style="font-family:'JetBrains Mono',monospace">0字</span></div>
+    <div class="minixpbar"><div class="minixpfill" id="news-bar" style="width:0%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A)"></div></div>
+    <textarea class="ta" id="news-text" placeholder="このニュースについて思ったこと、感じたこと、疑問など..." style="min-height:120px" oninput="updateNewsPreview()"></textarea>
+    <div style="background:#0A0C0F;border-radius:8px;padding:12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="news-tags"></div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#9B7E4A" id="news-preview">+0 XP</div>
+    </div>
+    <button class="btn btn-gold" onclick="submitNews()">記録する</button>
+  </div>
+  <div id="news-log"></div>
+</div>
+
 <!-- CALENDAR -->
 <div id="tab-calendar" class="tab">
   <div class="card" style="padding:14px 12px">
@@ -486,7 +505,7 @@ const BOOK_CATS = {
   philosophy: { label:"哲学",  icon:"🏛️", mult:1.5, color:"#C4A35A" },
 };
 
-const GRAND_SAGE_TARGET = { level:1000, wisdom:300, books:24, thoughts:100, works:3 };
+const GRAND_SAGE_TARGET = { level:1000, wisdom:300, books:200, thoughts:200, works:30 };
 function requiredXP(lv){ return lv*lv*20; }
 function getTitle(lv){ let t=ALL_TITLES[0]; for(const r of ALL_TITLES){ if(lv>=r.level) t=r; } return t; }
 
@@ -503,6 +522,7 @@ const DEFAULT = {
   dignity:{skin:false,clean:false,groom:false,lastDate:null},
   // 日別ログ: { "2025-06-17": { xpGained, books:[{title,pct}], thoughts:[{summary}], empathy:[{text}], dignity:[], tech:[] } }
   dayLog:{},
+  news:[],
   lastDaily:null,
 };
 
@@ -641,7 +661,7 @@ function refreshUI(){
   });
   document.getElementById('dig-all-done').style.display=(sameDig&&S.dignity.skin&&S.dignity.clean&&S.dignity.groom)?'block':'none';
 
-  renderBooks(); renderThoughtLog(); refreshThoughtSelect(); renderGrandSage(); renderTitleTable();
+  renderBooks(); renderThoughtLog(); refreshThoughtSelect(); renderGrandSage(); renderTitleTable(); renderNewsLog();
 }
 
 function updateEmpathyUI(key,count,max){
@@ -889,6 +909,7 @@ function renderCalendar(){
       if(log.tech&&log.tech.length)     dots+=`<div class="cal-dot" style="background:#C4A35A"></div>`;
       if(log.empathy&&log.empathy.length) dots+=`<div class="cal-dot" style="background:#7C9F8A"></div>`;
       if(log.dignity&&log.dignity.length) dots+=`<div class="cal-dot" style="background:#8A7C9F"></div>`;
+      if(log.news&&log.news.length)    dots+=`<div class="cal-dot" style="background:#6A9FBF"></div>`;
     }
 
     let cls='cal-day';
@@ -965,6 +986,15 @@ function renderCalDetail(){
     html+=`</div>`;
   }
 
+  // ニュース
+  if(log.news&&log.news.length){
+    html+=`<div class="detail-section"><div class="detail-section-label">📰 ニュース</div>`;
+    log.news.forEach(n=>{
+      html+=`<div class="detail-item">${n.title?`<span style="color:#9B7E4A">${escHtml(n.title)}</span> — `:''}${escHtml(n.text.slice(0,60))}${n.text.length>60?'…':''} <span class="detail-xp">+${n.xp}XP</span></div>`;
+    });
+    html+=`</div>`;
+  }
+
   html+=`</div>`;
   el.innerHTML=html;
 }
@@ -1001,6 +1031,67 @@ function renderGrandSage(){
 }
 
 // ═══════════════════════════════════════════════════════════
+// NEWS
+// ═══════════════════════════════════════════════════════════
+function calcNewsXP(len){
+  if(len >= 300) return 35;
+  if(len >= 150) return 20;
+  if(len >= 50)  return 10;
+  return 0;
+}
+
+function updateNewsPreview(){
+  const len = document.getElementById('news-text').value.trim().length;
+  const xp = calcNewsXP(len);
+  document.getElementById('news-n').textContent = len + '字';
+  document.getElementById('news-cnt').className = 'charcnt ' + (len >= 50 ? 'ok' : 'ng');
+  document.getElementById('news-bar').style.width = Math.min(100, (len / 300) * 100) + '%';
+
+  const tags = [
+    { lbl: '50字+', ok: len >= 50,  xp: '+10XP' },
+    { lbl: '150字+', ok: len >= 150, xp: '+20XP' },
+    { lbl: '300字+', ok: len >= 300, xp: '+35XP' },
+  ];
+  document.getElementById('news-tags').innerHTML = tags.map(t =>
+    `<span class="tag" style="background:${t.ok?'#4A7C6F22':'#2A354522'};border:1px solid ${t.ok?'#4A7C6F44':'#2A3545'};color:${t.ok?'#4A7C6F':'#2A3545'}">${t.lbl} ${t.xp}</span>`
+  ).join('');
+  document.getElementById('news-preview').textContent = '+' + xp + ' XP';
+}
+
+function submitNews(){
+  const title = document.getElementById('news-title').value.trim();
+  const text  = document.getElementById('news-text').value.trim();
+  if(text.length < 1) return;
+  const xp = calcNewsXP(text.length);
+  const entry = { id: Date.now(), title, text, xp };
+  if(!S.news) S.news = [];
+  S.news.unshift(entry);
+  pushDayLog('news', { title: title || 'ニュース', text: text.slice(0, 80), xp });
+  save();
+  if(xp > 0) gainXP(xp);
+  document.getElementById('news-title').value = '';
+  document.getElementById('news-text').value = '';
+  updateNewsPreview();
+  renderNewsLog();
+}
+
+function renderNewsLog(){
+  const el = document.getElementById('news-log');
+  const list = S.news || [];
+  if(list.length === 0){ el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="card"><div class="cardtitle">📰 記録履歴</div>${
+    list.slice(0, 10).map(n => `<div class="thlog">
+      <div class="throw">
+        <span style="font-size:11px;color:#7C6F52">${new Date(n.id).toLocaleDateString('ja-JP')}</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#9B7E4A">+${n.xp}XP</span>
+      </div>
+      ${n.title ? `<div style="font-size:12px;color:#9B7E4A;margin-bottom:4px;font-family:'Cinzel',serif">${escHtml(n.title)}</div>` : ''}
+      <div style="font-size:13px;color:#F0E6C0;line-height:1.5">${escHtml(n.text.slice(0, 80))}${n.text.length > 80 ? '…' : ''}</div>
+    </div>`).join('')
+  }</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
 // TITLE TABLE
 // ═══════════════════════════════════════════════════════════
 function renderTitleTable(){
@@ -1022,7 +1113,7 @@ function renderTitleTable(){
 // ═══════════════════════════════════════════════════════════
 // NAV
 // ═══════════════════════════════════════════════════════════
-const TAB_KEYS=['home','books','thought','tech','empathy','dignity','calendar','grand'];
+const TAB_KEYS=['home','books','thought','tech','empathy','dignity','news','calendar','grand'];
 
 function switchTab(key){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
