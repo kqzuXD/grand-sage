@@ -1097,7 +1097,6 @@ async function signOut(){
 async function loadFromSupabase(){
   if(!currentUser) return;
   isLoading = true;
-  setSyncStatus('syncing','読込中...');
   try {
     const { data, error } = await sb
       .from('game_state')
@@ -1162,11 +1161,17 @@ sb.auth.onAuthStateChange(async (event, session) => {
   if(session && session.user){
     currentUser = session.user;
     document.getElementById('auth-overlay').classList.add('hidden');
-    await loadFromSupabase(); // ← ここでisLoading=falseになってから↓へ
-    dailyReset();             // dailyReset内のsave()はisLoading=false後なのでOK
+    // まずローカルデータで即起動
+    dailyReset();
     refreshUI();
     if(S.activeTab && TAB_KEYS.includes(S.activeTab)) switchTab(S.activeTab);
-    setSyncStatus('ok', '同期済み'); // 最後に確実に同期済み表示
+    setSyncStatus('ok', '同期済み');
+    // 裏でSupabaseから最新データを取得して更新
+    loadFromSupabase().then(() => {
+      dailyReset();
+      refreshUI();
+      if(S.activeTab && TAB_KEYS.includes(S.activeTab)) switchTab(S.activeTab);
+    });
   } else {
     currentUser = null;
     document.getElementById('auth-overlay').classList.remove('hidden');
