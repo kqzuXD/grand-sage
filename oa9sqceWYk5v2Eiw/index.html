@@ -167,11 +167,11 @@ select{appearance:none;-webkit-appearance:none}
 </div>
 
 <div id="topbar">
-  <div class="logo">✦ GRAND SAGE JOURNEY</div>
-  <div style="display:flex;align-items:center;gap:10px">
-    <div id="sync-indicator"><div class="sync-dot" id="sync-dot"></div><span id="sync-text">--</span></div>
+  <div class="logo" style="flex-shrink:0">✦ GSJ</div>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+    <div id="sync-indicator"><div class="sync-dot" id="sync-dot"></div><span id="sync-text"></span></div>
     <div class="lvbadge" id="topbadge">Lv 1 · 0 XP</div>
-    <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px" onclick="signOut()">logout</button>
+    <button class="btn btn-secondary" style="padding:4px 8px;font-size:11px;letter-spacing:0" onclick="signOut()">OUT</button>
   </div>
 </div>
 
@@ -182,8 +182,8 @@ select{appearance:none;-webkit-appearance:none}
   <button class="navbtn" onclick="switchTab('tech')">TECH</button>
   <button class="navbtn" onclick="switchTab('empathy')">EMPATHY</button>
   <button class="navbtn" onclick="switchTab('dignity')">DIGNITY</button>
-  <button class="navbtn" onclick="switchTab('calendar')">CALENDAR</button>
   <button class="navbtn" onclick="switchTab('news')">NEWS</button>
+  <button class="navbtn" onclick="switchTab('calendar')">CALENDAR</button>
   <button class="navbtn" onclick="switchTab('grand')">GRAND SAGE</button>
 </div>
 
