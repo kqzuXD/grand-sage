@@ -534,18 +534,21 @@ let S = (()=>{
 function save(){ localStorage.setItem('gsj_v1', JSON.stringify(S)); }
 
 // ─── 日別ログ helper ───────────────────────────────────────
-function todayKey(){ return new Date().toISOString().slice(0,10); }
+function todayKey(){
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
 
 function pushDayLog(key, entry){
   const dk = todayKey();
-  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[] };
+  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[], news:[] };
   if(!S.dayLog[dk][key]) S.dayLog[dk][key] = [];
   S.dayLog[dk][key].push(entry);
 }
 
 function addDayXP(amount){
   const dk = todayKey();
-  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[] };
+  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[], news:[] };
   S.dayLog[dk].xpGained = (S.dayLog[dk].xpGained||0) + amount;
 }
 
