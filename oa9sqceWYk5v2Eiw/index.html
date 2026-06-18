@@ -1049,6 +1049,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 let currentUser = null;
 let syncTimer = null;
 let authMode = 'signin'; // 'signin' | 'signup'
+let isLoading = false; // ロード中フラグ
 
 // ─── 認証モード切替 ───────────────────────────────────────
 function toggleAuthMode(){
@@ -1094,6 +1095,7 @@ async function signOut(){
 // ─── Supabase からロード ─────────────────────────────────
 async function loadFromSupabase(){
   if(!currentUser) return;
+  isLoading = true;
   setSyncStatus('syncing','読込中...');
   try {
     const { data, error } = await sb
@@ -1103,7 +1105,6 @@ async function loadFromSupabase(){
       .single();
     if(error && error.code !== 'PGRST116') throw error;
     if(data && data.state){
-      // Supabaseのデータを常に優先（マルチデバイス同期の基準）
       S = { ...DEFAULT, ...data.state };
       localStorage.setItem('gsj_v1', JSON.stringify(S));
     }
@@ -1111,14 +1112,17 @@ async function loadFromSupabase(){
   } catch(e){
     console.error('load error', e);
     setSyncStatus('err', 'エラー');
+  } finally {
+    isLoading = false;
   }
 }
 
 // ─── Supabase へ保存（デバウンス1秒、体感は即時）────────
 function scheduleSyncToSupabase(){
+  if(isLoading) return; // ロード中は同期しない
   clearTimeout(syncTimer);
-  setSyncStatus('ok', '同期済み'); // localStorageに保存した瞬間に表示
-  syncTimer = setTimeout(syncToSupabase, 1000); // Supabaseへは裏で送る
+  setSyncStatus('ok', '同期済み');
+  syncTimer = setTimeout(syncToSupabase, 1000);
 }
 
 async function syncToSupabase(){
