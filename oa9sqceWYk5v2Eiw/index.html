@@ -541,7 +541,8 @@ function dailyReset(){
     S.dignity = {skin:false, clean:false, groom:false, lastDate:today};
     S.techLog = {...S.techLog, pushCount:0, lastPushDate:today};
     S._dailyBonusToday = null;
-    save();
+    localStorage.setItem('gsj_v1', JSON.stringify(S)); // Supabase同期はしない
+    scheduleSyncToSupabase(); // isLoadingがfalseの時だけ動く
   }
 }
 
@@ -1161,10 +1162,11 @@ sb.auth.onAuthStateChange(async (event, session) => {
   if(session && session.user){
     currentUser = session.user;
     document.getElementById('auth-overlay').classList.add('hidden');
-    await loadFromSupabase();
-    dailyReset();
+    await loadFromSupabase(); // ← ここでisLoading=falseになってから↓へ
+    dailyReset();             // dailyReset内のsave()はisLoading=false後なのでOK
     refreshUI();
     if(S.activeTab && TAB_KEYS.includes(S.activeTab)) switchTab(S.activeTab);
+    setSyncStatus('ok', '同期済み'); // 最後に確実に同期済み表示
   } else {
     currentUser = null;
     document.getElementById('auth-overlay').classList.remove('hidden');
