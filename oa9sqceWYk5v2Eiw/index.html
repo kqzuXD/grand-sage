@@ -1183,6 +1183,21 @@ sb.auth.onAuthStateChange(async (event, session) => {
 });
 
 // ═══════════════════════════════════════════════════════════
+// 0:00 自動リセットタイマー
+// ═══════════════════════════════════════════════════════════
+function scheduleMidnightReset(){
+  const now = new Date();
+  const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+  const msUntilMidnight = midnight - now;
+  setTimeout(() => {
+    dailyReset();
+    refreshUI();
+    scheduleMidnightReset(); // 翌日のリセットをまたセット
+  }, msUntilMidnight);
+}
+scheduleMidnightReset();
+
+// ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
 // 認証チェックが完了するまで待つ（onAuthStateChangeが処理する）
