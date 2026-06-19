@@ -783,7 +783,7 @@ function submitThought(){
   S.thoughtCount++;
   S.thoughts.unshift({id:Date.now(),sum,imp,ctr,per,xp,wisdom});
   S.dailyProgress.think=true;
-  pushDayLog('thoughts',{summary:sum.slice(0,80),xp,wisdom});
+  pushDayLog('thoughts',{summary:sum,imp,ctr,per,xp,wisdom});
   save(); gainXP(xp); checkDaily();
   ['th-summary','th-impression','th-counter','th-perspective'].forEach(id=>document.getElementById(id).value='');
   updateThoughtPreview(); renderThoughtLog();
@@ -961,7 +961,11 @@ function renderCalDetail(){
   if(log.thoughts&&log.thoughts.length){
     html+=`<div class="detail-section"><div class="detail-section-label">🧠 思考ログ</div>`;
     log.thoughts.forEach(t=>{
-      html+=`<div class="detail-item">${escHtml(t.summary)}${t.summary.length>=80?'…':''} <span class="detail-xp">+${t.xp}XP${t.wisdom?' +Wisdom':''}</span></div>`;
+      html+=`<div class="detail-item" style="white-space:pre-wrap">${escHtml(t.summary)} <span class="detail-xp">+${t.xp}XP${t.wisdom?' +Wisdom':''}</span>`;
+      if(t.imp) html+=`<div style="margin-top:8px;color:#B0A888">${escHtml(t.imp)}</div>`;
+      if(t.ctr) html+=`<div style="margin-top:6px;color:#8A9FAA;font-size:12px">反対意見: ${escHtml(t.ctr)}</div>`;
+      if(t.per) html+=`<div style="margin-top:4px;color:#8A9FAA;font-size:12px">別視点: ${escHtml(t.per)}</div>`;
+      html+=`</div>`;
     });
     html+=`</div>`;
   }
@@ -977,7 +981,7 @@ function renderCalDetail(){
   if(log.empathy&&log.empathy.length){
     html+=`<div class="detail-section"><div class="detail-section-label">👂 共感</div>`;
     log.empathy.forEach(e=>{
-      html+=`<div class="detail-item"><span style="color:#7C9F8A">${e.type}</span> — ${escHtml(e.text.slice(0,60))}${e.text.length>60?'…':''} <span class="detail-xp">+${e.xp}XP</span></div>`;
+      html+=`<div class="detail-item"><span style="color:#7C9F8A;font-size:12px">${e.type}</span><div style="margin-top:4px;white-space:pre-wrap">${escHtml(e.text)} <span class="detail-xp">+${e.xp}XP</span></div></div>`;
     });
     html+=`</div>`;
   }
@@ -993,7 +997,11 @@ function renderCalDetail(){
   if(log.news&&log.news.length){
     html+=`<div class="detail-section"><div class="detail-section-label">📰 ニュース</div>`;
     log.news.forEach(n=>{
-      html+=`<div class="detail-item">${n.title?`<span style="color:#9B7E4A">${escHtml(n.title)}</span> — `:''}${escHtml(n.text.slice(0,60))}${n.text.length>60?'…':''} <span class="detail-xp">+${n.xp}XP</span></div>`;
+      html+=`<div class="detail-item">`;
+      if(n.title) html+=`<div style="font-family:'Cinzel',serif;font-size:13px;color:#9B7E4A;margin-bottom:6px">${escHtml(n.title)}</div>`;
+      html+=`<div style="white-space:pre-wrap;line-height:1.7">${escHtml(n.text)}</div>`;
+      html+=`<div style="margin-top:6px"><span class="detail-xp">+${n.xp}XP</span></div>`;
+      html+=`</div>`;
     });
     html+=`</div>`;
   }
