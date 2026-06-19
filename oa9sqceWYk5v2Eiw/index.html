@@ -167,7 +167,7 @@ select{appearance:none;-webkit-appearance:none}
 </div>
 
 <div id="topbar">
-  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.0</div></div>
+  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.1</div></div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
     <div id="sync-indicator"><div class="sync-dot" id="sync-dot"></div><span id="sync-text"></span></div>
     <div class="lvbadge" id="topbadge">Lv 1 · 0 XP</div>
@@ -261,27 +261,63 @@ select{appearance:none;-webkit-appearance:none}
 
 <!-- THOUGHT -->
 <div id="tab-thought" class="tab">
-  <div class="card">
-    <div class="cardtitle">🧠 思考ログを記録する</div>
-    <div style="font-size:11px;color:#7C6F52;margin-bottom:6px">対象の本（任意）</div>
-    <select class="inp" id="th-book" style="cursor:pointer"></select>
-    <div class="charcnt ng" id="sum-cnt"><span>要約 <span style="color:#9B7E4A">+10XP</span></span><span id="sum-n" style="font-family:'JetBrains Mono',monospace">0 / 100</span></div>
-    <div class="minixpbar"><div class="minixpfill" id="sum-bar" style="width:0%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A)"></div></div>
-    <textarea class="ta" id="th-summary" placeholder="要約（100文字以上）" oninput="updateThoughtPreview()"></textarea>
-    <div class="charcnt ng" id="imp-cnt"><span>感想 <span style="color:#9B7E4A">+15XP</span></span><span id="imp-n" style="font-family:'JetBrains Mono',monospace">0 / 200</span></div>
-    <div class="minixpbar"><div class="minixpfill" id="imp-bar" style="width:0%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A)"></div></div>
-    <textarea class="ta" id="th-impression" placeholder="感想（200文字以上）" oninput="updateThoughtPreview()"></textarea>
-    <div style="font-size:11px;color:#7C6F52;margin-bottom:4px" id="ctr-lbl">反対意見 <span style="color:#9B7E4A">+20XP</span></div>
-    <textarea class="ta" style="min-height:60px" id="th-counter" placeholder="反対意見・批判的視点" oninput="updateThoughtPreview()"></textarea>
-    <div style="font-size:11px;color:#7C6F52;margin-bottom:4px" id="per-lbl">別視点 <span style="color:#9B7E4A">+25XP</span></div>
-    <textarea class="ta" style="min-height:60px" id="th-perspective" placeholder="別の視点・別の解釈" oninput="updateThoughtPreview()"></textarea>
-    <div style="background:#0A0C0F;border-radius:8px;padding:12px;margin-bottom:12px">
-      <div style="display:flex;gap:8px;flex-wrap:wrap" id="th-tags"></div>
-      <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:13px" id="th-preview"></div>
-    </div>
-    <button class="btn btn-gold" onclick="submitThought()">記録する</button>
+  <!-- トグル -->
+  <div style="display:flex;gap:8px;margin-bottom:16px">
+    <button id="th-toggle-book" class="btn btn-gold" style="flex:1;padding:10px" onclick="switchThoughtMode('book')">📖 本の感想</button>
+    <button id="th-toggle-paper" class="btn btn-secondary" style="flex:1;padding:10px" onclick="switchThoughtMode('paper')">📄 論文の感想</button>
   </div>
-  <div id="thought-log"></div>
+
+  <!-- 本モード -->
+  <div id="th-mode-book">
+    <div class="card">
+      <div class="cardtitle">📖 本の思考ログ</div>
+      <div style="font-size:11px;color:#7C6F52;margin-bottom:6px">対象の本（任意）</div>
+      <select class="inp" id="th-book" style="cursor:pointer"></select>
+      <div class="charcnt ng" id="sum-cnt"><span>要約 <span style="color:#9B7E4A">+10XP</span></span><span id="sum-n" style="font-family:'JetBrains Mono',monospace">0 / 100</span></div>
+      <div class="minixpbar"><div class="minixpfill" id="sum-bar" style="width:0%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A)"></div></div>
+      <textarea class="ta" id="th-summary" placeholder="要約（100文字以上）" oninput="updateThoughtPreview()"></textarea>
+      <div class="charcnt ng" id="imp-cnt"><span>感想 <span style="color:#9B7E4A">+15XP</span></span><span id="imp-n" style="font-family:'JetBrains Mono',monospace">0 / 200</span></div>
+      <div class="minixpbar"><div class="minixpfill" id="imp-bar" style="width:0%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A)"></div></div>
+      <textarea class="ta" id="th-impression" placeholder="感想（200文字以上）" oninput="updateThoughtPreview()"></textarea>
+      <div style="font-size:11px;color:#7C6F52;margin-bottom:4px" id="ctr-lbl">反対意見 <span style="color:#9B7E4A">+20XP</span></div>
+      <textarea class="ta" style="min-height:60px" id="th-counter" placeholder="反対意見・批判的視点" oninput="updateThoughtPreview()"></textarea>
+      <div style="font-size:11px;color:#7C6F52;margin-bottom:4px" id="per-lbl">別視点 <span style="color:#9B7E4A">+25XP</span></div>
+      <textarea class="ta" style="min-height:60px" id="th-perspective" placeholder="別の視点・別の解釈" oninput="updateThoughtPreview()"></textarea>
+      <div style="background:#0A0C0F;border-radius:8px;padding:12px;margin-bottom:12px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="th-tags"></div>
+        <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:13px" id="th-preview"></div>
+      </div>
+      <button class="btn btn-gold" onclick="submitThought()">記録する</button>
+    </div>
+    <div id="thought-log"></div>
+  </div>
+
+  <!-- 論文モード -->
+  <div id="th-mode-paper" style="display:none">
+    <div class="card">
+      <div class="cardtitle">📄 論文の思考ログ</div>
+      <div style="font-size:11px;color:#7C6F52;margin-bottom:6px">論文タイトル（任意）</div>
+      <input class="inp" id="paper-title" placeholder="論文タイトル">
+      <div style="font-size:11px;color:#7C6F52;margin-bottom:6px">著者（任意）</div>
+      <input class="inp" id="paper-author" placeholder="著者名">
+      <div class="charcnt ng" id="paper-sum-cnt"><span>要約 <span style="color:#9B7E4A">+10XP</span></span><span id="paper-sum-n" style="font-family:'JetBrains Mono',monospace">0 / 100</span></div>
+      <div class="minixpbar"><div class="minixpfill" id="paper-sum-bar" style="width:0%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A)"></div></div>
+      <textarea class="ta" id="paper-summary" placeholder="論文の要約（100文字以上）" oninput="updatePaperPreview()"></textarea>
+      <div class="charcnt ng" id="paper-imp-cnt"><span>感想・考察 <span style="color:#9B7E4A">+15XP</span></span><span id="paper-imp-n" style="font-family:'JetBrains Mono',monospace">0 / 200</span></div>
+      <div class="minixpbar"><div class="minixpfill" id="paper-imp-bar" style="width:0%;background:linear-gradient(90deg,#4A7C6F,#9B7E4A)"></div></div>
+      <textarea class="ta" id="paper-impression" placeholder="感想・考察（200文字以上）" oninput="updatePaperPreview()"></textarea>
+      <div style="font-size:11px;color:#7C6F52;margin-bottom:4px" id="paper-ctr-lbl">反対意見・問題点 <span style="color:#9B7E4A">+20XP</span></div>
+      <textarea class="ta" style="min-height:60px" id="paper-counter" placeholder="この論文への疑問・批判的視点" oninput="updatePaperPreview()"></textarea>
+      <div style="font-size:11px;color:#7C6F52;margin-bottom:4px" id="paper-per-lbl">応用・別視点 <span style="color:#9B7E4A">+25XP</span></div>
+      <textarea class="ta" style="min-height:60px" id="paper-perspective" placeholder="実生活への応用・別の解釈" oninput="updatePaperPreview()"></textarea>
+      <div style="background:#0A0C0F;border-radius:8px;padding:12px;margin-bottom:12px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap" id="paper-tags"></div>
+        <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:13px" id="paper-preview"></div>
+      </div>
+      <button class="btn btn-gold" onclick="submitPaper()">記録する</button>
+    </div>
+    <div id="paper-log"></div>
+  </div>
 </div>
 
 <!-- TECH -->
@@ -523,6 +559,7 @@ const DEFAULT = {
   // 日別ログ: { "2025-06-17": { xpGained, books:[{title,pct}], thoughts:[{summary}], empathy:[{text}], dignity:[], tech:[] } }
   dayLog:{},
   news:[],
+  papers:[],
   lastDaily:null,
 };
 
@@ -541,14 +578,14 @@ function todayKey(){
 
 function pushDayLog(key, entry){
   const dk = todayKey();
-  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[], news:[] };
+  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[], news:[], papers:[] };
   if(!S.dayLog[dk][key]) S.dayLog[dk][key] = [];
   S.dayLog[dk][key].push(entry);
 }
 
 function addDayXP(amount){
   const dk = todayKey();
-  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[], news:[] };
+  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[], news:[], papers:[] };
   S.dayLog[dk].xpGained = (S.dayLog[dk].xpGained||0) + amount;
 }
 
@@ -664,7 +701,7 @@ function refreshUI(){
   });
   document.getElementById('dig-all-done').style.display=(sameDig&&S.dignity.skin&&S.dignity.clean&&S.dignity.groom)?'block':'none';
 
-  renderBooks(); renderThoughtLog(); refreshThoughtSelect(); renderGrandSage(); renderTitleTable(); renderNewsLog();
+  renderBooks(); renderThoughtLog(); refreshThoughtSelect(); renderGrandSage(); renderTitleTable(); renderNewsLog(); renderPaperLog();
 }
 
 function updateEmpathyUI(key,count,max){
@@ -912,6 +949,7 @@ function renderCalendar(){
       if(log.tech&&log.tech.length)     dots+=`<div class="cal-dot" style="background:#C4A35A"></div>`;
       if(log.empathy&&log.empathy.length) dots+=`<div class="cal-dot" style="background:#7C9F8A"></div>`;
       if(log.dignity&&log.dignity.length) dots+=`<div class="cal-dot" style="background:#8A7C9F"></div>`;
+      if(log.papers&&log.papers.length) dots+=`<div class="cal-dot" style="background:#9F7ABF"></div>`;
       if(log.news&&log.news.length)    dots+=`<div class="cal-dot" style="background:#6A9FBF"></div>`;
     }
 
@@ -993,6 +1031,23 @@ function renderCalDetail(){
     html+=`</div>`;
   }
 
+  // 論文
+  if(log.papers&&log.papers.length){
+    html+=`<div class="detail-section"><div class="detail-section-label">📄 論文</div>`;
+    log.papers.forEach(p=>{
+      html+=`<div class="detail-item">`;
+      if(p.title) html+=`<div style="font-family:'Cinzel',serif;font-size:13px;color:#9B7E4A;margin-bottom:2px">${escHtml(p.title)}</div>`;
+      if(p.author) html+=`<div style="font-size:11px;color:#7C6F52;margin-bottom:6px">${escHtml(p.author)}</div>`;
+      html+=`<div style="white-space:pre-wrap;line-height:1.7">${escHtml(p.summary)}</div>`;
+      if(p.imp) html+=`<div style="margin-top:8px;color:#B0A888;white-space:pre-wrap">${escHtml(p.imp)}</div>`;
+      if(p.ctr) html+=`<div style="margin-top:6px;color:#8A9FAA;font-size:12px">反対: ${escHtml(p.ctr)}</div>`;
+      if(p.per) html+=`<div style="margin-top:4px;color:#8A9FAA;font-size:12px">応用: ${escHtml(p.per)}</div>`;
+      html+=`<div style="margin-top:6px"><span class="detail-xp">+${p.xp}XP${p.wisdom?' +Wisdom':''}</span></div>`;
+      html+=`</div>`;
+    });
+    html+=`</div>`;
+  }
+
   // ニュース
   if(log.news&&log.news.length){
     html+=`<div class="detail-section"><div class="detail-section-label">📰 ニュース</div>`;
@@ -1039,6 +1094,86 @@ function renderGrandSage(){
     const ok=c.current>=c.target;
     return `<div class="conditem"><div class="condcirc${ok?' ok':''}">${ok?'✓':''}</div><span style="font-size:13px;color:${ok?'#4A7C6F':'#7C6F52'}">${c.label}: ${c.current.toLocaleString()} / ${c.target.toLocaleString()}</span></div>`;
   }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// THOUGHT MODE TOGGLE
+// ═══════════════════════════════════════════════════════════
+let thoughtMode = 'book';
+
+function switchThoughtMode(mode){
+  thoughtMode = mode;
+  document.getElementById('th-mode-book').style.display  = mode === 'book'  ? 'block' : 'none';
+  document.getElementById('th-mode-paper').style.display = mode === 'paper' ? 'block' : 'none';
+  document.getElementById('th-toggle-book').className  = 'btn ' + (mode === 'book'  ? 'btn-gold' : 'btn-secondary');
+  document.getElementById('th-toggle-paper').className = 'btn ' + (mode === 'paper' ? 'btn-gold' : 'btn-secondary');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAPER（論文）
+// ═══════════════════════════════════════════════════════════
+function updatePaperPreview(){
+  const sum = document.getElementById('paper-summary').value.trim().length;
+  const imp = document.getElementById('paper-impression').value.trim().length;
+  const ctr = document.getElementById('paper-counter').value.trim().length;
+  const per = document.getElementById('paper-perspective').value.trim().length;
+  const s=sum>=100, i=imp>=200, c=ctr>0, p=per>0;
+  document.getElementById('paper-sum-n').textContent = `${sum} / 100`;
+  document.getElementById('paper-imp-n').textContent = `${imp} / 200`;
+  document.getElementById('paper-sum-bar').style.width = Math.min(100,(sum/100)*100) + '%';
+  document.getElementById('paper-imp-bar').style.width = Math.min(100,(imp/200)*100) + '%';
+  document.getElementById('paper-sum-cnt').className = 'charcnt ' + (s?'ok':'ng');
+  document.getElementById('paper-imp-cnt').className = 'charcnt ' + (i?'ok':'ng');
+  document.getElementById('paper-ctr-lbl').style.color = c ? '#4A7C6F' : '#7C6F52';
+  document.getElementById('paper-per-lbl').style.color = p ? '#4A7C6F' : '#7C6F52';
+  let xp=0; if(s)xp+=10; if(i)xp+=15; if(c)xp+=20; if(p)xp+=25;
+  const wisdom = s&&i&&c&&p;
+  document.getElementById('paper-tags').innerHTML = [
+    {lbl:'要約',ok:s},{lbl:'感想',ok:i},{lbl:'反対',ok:c},{lbl:'応用',ok:p}
+  ].map(t=>`<span class="tag" style="background:${t.ok?'#4A7C6F22':'#2A354522'};border:1px solid ${t.ok?'#4A7C6F44':'#2A3545'};color:${t.ok?'#4A7C6F':'#2A3545'}">${t.lbl} ${t.ok?'✓':'✗'}</span>`).join('');
+  document.getElementById('paper-preview').innerHTML = `<span style="color:#9B7E4A">+${xp} XP</span>${wisdom?'<span style="color:#4A7C6F;margin-left:12px">+ Wisdom 1</span>':''}`;
+}
+
+function submitPaper(){
+  const title  = document.getElementById('paper-title').value.trim();
+  const author = document.getElementById('paper-author').value.trim();
+  const sum = document.getElementById('paper-summary').value.trim();
+  const imp = document.getElementById('paper-impression').value.trim();
+  const ctr = document.getElementById('paper-counter').value.trim();
+  const per = document.getElementById('paper-perspective').value.trim();
+  const s=sum.length>=100, i=imp.length>=200, c=ctr.length>0, p=per.length>0;
+  if(!s&&!i&&!c&&!p) return;
+  let xp=0; if(s)xp+=10; if(i)xp+=15; if(c)xp+=20; if(p)xp+=25;
+  const wisdom = s&&i&&c&&p;
+  if(wisdom) S.wisdom++;
+  S.thoughtCount++;
+  if(!S.papers) S.papers=[];
+  S.papers.unshift({ id:Date.now(), title, author, sum, imp, ctr, per, xp, wisdom });
+  S.dailyProgress.think = true;
+  pushDayLog('papers', { title: title||'論文', author, summary:sum, imp, ctr, per, xp, wisdom });
+  save(); gainXP(xp); checkDaily();
+  ['paper-title','paper-author','paper-summary','paper-impression','paper-counter','paper-perspective'].forEach(id=>document.getElementById(id).value='');
+  updatePaperPreview(); renderPaperLog();
+}
+
+function renderPaperLog(){
+  const el = document.getElementById('paper-log');
+  const list = S.papers || [];
+  if(list.length===0){ el.innerHTML=''; return; }
+  el.innerHTML = `<div class="card"><div class="cardtitle">📄 論文ログ履歴</div>${
+    list.slice(0,10).map(p=>`<div class="thlog">
+      <div class="throw">
+        <span style="font-size:11px;color:#7C6F52">${new Date(p.id).toLocaleDateString('ja-JP')}</span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#9B7E4A">+${p.xp}XP${p.wisdom?' +Wisdom':''}</span>
+      </div>
+      ${p.title?`<div style="font-family:'Cinzel',serif;font-size:13px;color:#9B7E4A;margin-bottom:2px">${escHtml(p.title)}</div>`:''}
+      ${p.author?`<div style="font-size:11px;color:#7C6F52;margin-bottom:6px">${escHtml(p.author)}</div>`:''}
+      <div style="font-size:13px;color:#F0E6C0;line-height:1.5;white-space:pre-wrap">${escHtml(p.sum)}</div>
+      ${p.imp?`<div style="margin-top:8px;color:#B0A888;font-size:13px;line-height:1.5;white-space:pre-wrap">${escHtml(p.imp)}</div>`:''}
+      ${p.ctr?`<div style="margin-top:6px;color:#8A9FAA;font-size:12px">反対: ${escHtml(p.ctr)}</div>`:''}
+      ${p.per?`<div style="margin-top:4px;color:#8A9FAA;font-size:12px">応用: ${escHtml(p.per)}</div>`:''}
+    </div>`).join('')
+  }</div>`;
 }
 
 // ═══════════════════════════════════════════════════════════
