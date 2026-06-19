@@ -1077,7 +1077,7 @@ function submitNews(){
   const entry = { id: Date.now(), title, text, xp };
   if(!S.news) S.news = [];
   S.news.unshift(entry);
-  pushDayLog('news', { title: title || 'ニュース', text: text.slice(0, 80), xp });
+  pushDayLog('news', { title: title || 'ニュース', text: text, xp });
   save();
   if(xp > 0) gainXP(xp);
   document.getElementById('news-title').value = '';
