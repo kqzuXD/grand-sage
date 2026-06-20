@@ -167,7 +167,7 @@ select{appearance:none;-webkit-appearance:none}
 </div>
 
 <div id="topbar">
-  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.2</div></div>
+  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.3</div></div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
     <div id="sync-indicator"><div class="sync-dot" id="sync-dot"></div><span id="sync-text"></span></div>
     <div class="lvbadge" id="topbadge">Lv 1 · 0 XP</div>
@@ -319,6 +319,57 @@ select{appearance:none;-webkit-appearance:none}
   </div>
 </div>
 
+
+<!-- EMPATHY -->
+<div id="tab-empathy" class="tab">
+  <div class="actitem">
+    <div class="actrow-top" style="margin-bottom:4px">
+      <div>
+        <div style="font-size:22px;margin-bottom:4px">👂</div>
+        <div style="font-size:14px;font-family:'Cinzel',serif">人の意見を聞く</div>
+        <div style="font-size:11px;color:#7C6F52;margin-top:2px" id="emp-listen-sub">本日 0 / 3回</div>
+      </div>
+      <span class="tag" style="background:#9B7E4A22;border:1px solid #9B7E4A44;color:#9B7E4A;align-self:flex-start">+10XP</span>
+    </div>
+    <div class="dotbar" id="emp-listen-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="emp-form">
+      <div class="emp-form-label">誰の、どんな意見を聞いたか <span style="color:#8B4A4A">*必須</span></div>
+      <textarea class="ta" style="min-height:60px;margin-bottom:8px" id="emp-listen-text" placeholder="例：友人の転職に対する考え方を聞いた。リスクより成長を優先するという視点が新鮮だった。"></textarea>
+      <button class="btn btn-primary" id="emp-listen-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('listen')">記録する</button>
+    </div>
+  </div>
+  <div class="actitem">
+    <div class="actrow-top" style="margin-bottom:4px">
+      <div>
+        <div style="font-size:22px;margin-bottom:4px">🌍</div>
+        <div style="font-size:14px;font-family:'Cinzel',serif">異なる価値観を記録</div>
+        <div style="font-size:11px;color:#7C6F52;margin-top:2px" id="emp-diff-sub">本日 0 / 3回</div>
+      </div>
+      <span class="tag" style="background:#9B7E4A22;border:1px solid #9B7E4A44;color:#9B7E4A;align-self:flex-start">+20XP</span>
+    </div>
+    <div class="dotbar" id="emp-diff-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    <div class="emp-form">
+      <div class="emp-form-label">どんな価値観・考え方と出会ったか <span style="color:#8B4A4A">*必須</span></div>
+      <textarea class="ta" style="min-height:60px;margin-bottom:8px" id="emp-diff-text" placeholder="例：「お金より時間が大事」という人の考え方。自分は逆だったが、その人の生活を聞いて一理あると感じた。"></textarea>
+      <button class="btn btn-primary" id="emp-diff-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('different')">記録する</button>
+    </div>
+  </div>
+  <div class="actitem">
+    <div class="actrow-top" style="margin-bottom:4px">
+      <div>
+        <div style="font-size:22px;margin-bottom:4px">✨</div>
+        <div style="font-size:14px;font-family:'Cinzel',serif">自分の考えが変化した</div>
+        <div style="font-size:11px;color:#7C6F52;margin-top:2px" id="emp-changed-sub">本日 0 / 1回</div>
+      </div>
+      <span class="tag" style="background:#9B7E4A22;border:1px solid #9B7E4A44;color:#9B7E4A;align-self:flex-start">+50XP</span>
+    </div>
+    <div class="emp-form">
+      <div class="emp-form-label">何がどう変わったか <span style="color:#8B4A4A">*必須</span></div>
+      <textarea class="ta" style="min-height:80px;margin-bottom:8px" id="emp-changed-text" placeholder="例：「努力は必ず報われる」と信じていたが、構造的な不公平の存在を学び、努力だけでなく環境も重要だと考えが変わった。"></textarea>
+      <button class="btn btn-primary" id="emp-changed-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('changed')">記録する</button>
+    </div>
+  </div>
+</div>
 
 <!-- DAILY -->
 <div id="tab-daily" class="tab">
@@ -1262,7 +1313,7 @@ function renderTitleTable(){
 // ═══════════════════════════════════════════════════════════
 // NAV
 // ═══════════════════════════════════════════════════════════
-const TAB_KEYS=['home','books','thought','empathy','news','daily','calendar','grand'];
+const TAB_KEYS=['home','books','thought','empathy','daily','news','calendar','grand'];
 
 function switchTab(key){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -1272,6 +1323,7 @@ function switchTab(key){
   document.querySelectorAll('.navbtn')[idx].classList.add('active');
   S.activeTab=key;
   if(key==='calendar') renderCalendar();
+  if(key==='grand'){ renderGrandSage(); renderTitleTable(); }
 }
 function goTab(key){ switchTab(key); }
 
