@@ -167,7 +167,7 @@ select{appearance:none;-webkit-appearance:none}
 </div>
 
 <div id="topbar">
-  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.1</div></div>
+  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.2</div></div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
     <div id="sync-indicator"><div class="sync-dot" id="sync-dot"></div><span id="sync-text"></span></div>
     <div class="lvbadge" id="topbadge">Lv 1 · 0 XP</div>
@@ -179,10 +179,9 @@ select{appearance:none;-webkit-appearance:none}
   <button class="navbtn active" onclick="switchTab('home')">HOME</button>
   <button class="navbtn" onclick="switchTab('books')">BOOKS</button>
   <button class="navbtn" onclick="switchTab('thought')">THOUGHT</button>
-  <button class="navbtn" onclick="switchTab('tech')">TECH</button>
   <button class="navbtn" onclick="switchTab('empathy')">EMPATHY</button>
-  <button class="navbtn" onclick="switchTab('dignity')">DIGNITY</button>
   <button class="navbtn" onclick="switchTab('news')">NEWS</button>
+  <button class="navbtn" onclick="switchTab('daily')">DAILY</button>
   <button class="navbtn" onclick="switchTab('calendar')">CALENDAR</button>
   <button class="navbtn" onclick="switchTab('grand')">GRAND SAGE</button>
 </div>
@@ -219,10 +218,10 @@ select{appearance:none;-webkit-appearance:none}
       <div style="flex:1"><div style="font-size:13px">📖 読書進捗を更新する</div></div>
       <span class="tag" style="background:#7C6F5222;border:1px solid #7C6F5244;color:#7C6F52">〜2XP/%</span>
     </div>
-    <div class="quest" id="dq-think" onclick="goTab('thought')">
+    <div class="quest" id="dq-think" onclick="goTab('daily')">
       <div class="qcheck" id="dqc-think">✓</div>
-      <div style="flex:1"><div style="font-size:13px">🧠 思考ログを1件記録する</div></div>
-      <span class="tag" style="background:#7C6F5222;border:1px solid #7C6F5244;color:#7C6F52">+15〜70XP</span>
+      <div style="flex:1"><div style="font-size:13px">🌅 明日の予定を書く</div></div>
+      <span class="tag" style="background:#7C6F5222;border:1px solid #7C6F5244;color:#7C6F52">+5XP</span>
     </div>
     <div class="quest" id="dq-dev" onclick="goTab('tech')">
       <div class="qcheck" id="dqc-dev">✓</div>
@@ -320,123 +319,82 @@ select{appearance:none;-webkit-appearance:none}
   </div>
 </div>
 
-<!-- TECH -->
-<div id="tab-tech" class="tab">
-  <div class="techitem">
-    <div class="techicon" style="background:#4A7C6F22;border:1px solid #4A7C6F44">⌨️</div>
-    <div style="flex:1">
-      <div style="font-size:14px;font-family:'Cinzel',serif;margin-bottom:2px">開発 30分</div>
-      <div style="font-size:11px;color:#7C6F52">コードを書いた・学習した</div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-size:12px;color:#4A7C6F;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+10XP</div>
-      <button class="btn btn-primary" id="tech-dev-btn" style="padding:6px 14px;font-size:12px" onclick="logDev()">記録</button>
-    </div>
-  </div>
-  <div class="techitem">
-    <div class="techicon" style="background:#9B7E4A22;border:1px solid #9B7E4A44">🚀</div>
-    <div style="flex:1">
-      <div style="font-size:14px;font-family:'Cinzel',serif;margin-bottom:2px">Git Push</div>
-      <div style="font-size:11px;color:#7C6F52" id="push-sub">本日 0/5 回</div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-size:12px;color:#9B7E4A;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+10XP</div>
-      <button class="btn btn-primary" id="push-btn" style="padding:6px 14px;font-size:12px" onclick="logPush()">記録</button>
-    </div>
-  </div>
-  <div class="techitem">
-    <div class="techicon" style="background:#C4A35A22;border:1px solid #C4A35A44">🏆</div>
-    <div style="flex:1">
-      <div style="font-size:14px;font-family:'Cinzel',serif;margin-bottom:2px">機能完成</div>
-      <div style="font-size:11px;color:#7C6F52">一つの機能・制作物を完成させた</div>
-    </div>
-    <div style="text-align:right">
-      <div style="font-size:12px;color:#C4A35A;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+100XP</div>
-      <button class="btn btn-gold" style="padding:6px 14px;font-size:12px" onclick="logFeature()">記録</button>
-    </div>
-  </div>
-</div>
 
-<!-- EMPATHY -->
-<div id="tab-empathy" class="tab">
-  <!-- 人の意見を聞く -->
-  <div class="actitem">
-    <div class="actrow-top" style="margin-bottom:4px">
-      <div>
-        <div style="font-size:22px;margin-bottom:4px">👂</div>
-        <div style="font-size:14px;font-family:'Cinzel',serif">人の意見を聞く</div>
-        <div style="font-size:11px;color:#7C6F52;margin-top:2px" id="emp-listen-sub">本日 0 / 3回</div>
-      </div>
-      <span class="tag" style="background:#9B7E4A22;border:1px solid #9B7E4A44;color:#9B7E4A;align-self:flex-start">+10XP</span>
-    </div>
-    <div class="dotbar" id="emp-listen-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-    <div class="emp-form">
-      <div class="emp-form-label">誰の、どんな意見を聞いたか <span style="color:#8B4A4A">*必須</span></div>
-      <textarea class="ta" style="min-height:60px;margin-bottom:8px" id="emp-listen-text" placeholder="例：友人の転職に対する考え方を聞いた。リスクより成長を優先するという視点が新鮮だった。"></textarea>
-      <button class="btn btn-primary" id="emp-listen-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('listen')">記録する</button>
-    </div>
-  </div>
-  <!-- 異なる価値観 -->
-  <div class="actitem">
-    <div class="actrow-top" style="margin-bottom:4px">
-      <div>
-        <div style="font-size:22px;margin-bottom:4px">🌍</div>
-        <div style="font-size:14px;font-family:'Cinzel',serif">異なる価値観を記録</div>
-        <div style="font-size:11px;color:#7C6F52;margin-top:2px" id="emp-diff-sub">本日 0 / 3回</div>
-      </div>
-      <span class="tag" style="background:#9B7E4A22;border:1px solid #9B7E4A44;color:#9B7E4A;align-self:flex-start">+20XP</span>
-    </div>
-    <div class="dotbar" id="emp-diff-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-    <div class="emp-form">
-      <div class="emp-form-label">どんな価値観・考え方と出会ったか <span style="color:#8B4A4A">*必須</span></div>
-      <textarea class="ta" style="min-height:60px;margin-bottom:8px" id="emp-diff-text" placeholder="例：「お金より時間が大事」という人の考え方。自分は逆だったが、その人の生活を聞いて一理あると感じた。"></textarea>
-      <button class="btn btn-primary" id="emp-diff-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('different')">記録する</button>
-    </div>
-  </div>
-  <!-- 考えが変化 -->
-  <div class="actitem">
-    <div class="actrow-top" style="margin-bottom:4px">
-      <div>
-        <div style="font-size:22px;margin-bottom:4px">✨</div>
-        <div style="font-size:14px;font-family:'Cinzel',serif">自分の考えが変化した</div>
-        <div style="font-size:11px;color:#7C6F52;margin-top:2px" id="emp-changed-sub">本日 0 / 1回</div>
-      </div>
-      <span class="tag" style="background:#9B7E4A22;border:1px solid #9B7E4A44;color:#9B7E4A;align-self:flex-start">+50XP</span>
-    </div>
-    <div class="emp-form">
-      <div class="emp-form-label">何がどう変わったか <span style="color:#8B4A4A">*必須</span></div>
-      <textarea class="ta" style="min-height:80px;margin-bottom:8px" id="emp-changed-text" placeholder="例：「努力は必ず報われる」と信じていたが、構造的な不公平の存在を学び、努力だけでなく環境も重要だと考えが変わった。"></textarea>
-      <button class="btn btn-primary" id="emp-changed-btn" style="padding:8px 16px;font-size:12px" onclick="logEmpathy('changed')">記録する</button>
-    </div>
-  </div>
-</div>
+<!-- DAILY -->
+<div id="tab-daily" class="tab">
 
-<!-- DIGNITY -->
-<div id="tab-dignity" class="tab">
-  <div class="actitem" id="dig-skin-card">
-    <div class="actrow-top">
-      <div><div style="font-size:26px;margin-bottom:4px">💧</div><div style="font-size:14px;font-family:'Cinzel',serif">スキンケア</div><div style="font-size:11px;color:#7C6F52;margin-top:2px">洗顔・保湿・日焼け止めなど</div></div>
-      <div style="text-align:right"><div style="font-size:14px;color:#9B7E4A;margin-bottom:8px;font-family:'JetBrains Mono',monospace">+2XP</div><button class="btn btn-primary" id="dig-skin-btn" style="padding:8px 16px" onclick="logDignity('skin',2)">記録</button></div>
+  <!-- TOMORROW -->
+  <div class="card">
+    <div class="cardtitle">🌅 Tomorrow</div>
+    <div style="font-size:12px;color:#7C6F52;margin-bottom:10px">明日の予定・意気込みを一言で</div>
+    <div style="display:flex;gap:8px">
+      <input class="inp" id="tomorrow-text" placeholder="例：朝7時起き、読書1時間、〇〇を完成させる" style="margin-bottom:0;flex:1" maxlength="100">
+      <button class="btn btn-gold" style="padding:10px 14px;white-space:nowrap" onclick="submitTomorrow()">記録</button>
+    </div>
+    <div id="tomorrow-done" style="display:none;margin-top:12px;padding:10px;background:rgba(74,124,111,.08);border:1px solid #4A7C6F44;border-radius:8px">
+      <div style="font-size:11px;color:#4A7C6F;margin-bottom:4px">明日の予定</div>
+      <div style="font-size:14px;color:#F0E6C0" id="tomorrow-display"></div>
     </div>
   </div>
-  <div class="actitem" id="dig-clean-card">
-    <div class="actrow-top">
-      <div><div style="font-size:26px;margin-bottom:4px">🧹</div><div style="font-size:14px;font-family:'Cinzel',serif">部屋掃除</div><div style="font-size:11px;color:#7C6F52;margin-top:2px">掃き掃除・拭き掃除・片付けなど</div></div>
-      <div style="text-align:right"><div style="font-size:14px;color:#9B7E4A;margin-bottom:8px;font-family:'JetBrains Mono',monospace">+5XP</div><button class="btn btn-primary" id="dig-clean-btn" style="padding:8px 16px" onclick="logDignity('clean',5)">記録</button></div>
+
+  <!-- TECH -->
+  <div class="card">
+    <div class="cardtitle">⚙️ Tech</div>
+    <div class="techitem" style="background:none;border:none;padding:0;margin-bottom:12px">
+      <div class="techicon" style="background:#4A7C6F22;border:1px solid #4A7C6F44">⌨️</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-family:'Cinzel',serif;margin-bottom:2px">開発 30分</div>
+        <div style="font-size:11px;color:#7C6F52">コードを書いた・学習した</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12px;color:#4A7C6F;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+10XP</div>
+        <button class="btn btn-primary" id="tech-dev-btn" style="padding:6px 14px;font-size:12px" onclick="logDev()">記録</button>
+      </div>
+    </div>
+    <div class="techitem" style="background:none;border:none;padding:0;margin-bottom:12px">
+      <div class="techicon" style="background:#9B7E4A22;border:1px solid #9B7E4A44">🚀</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-family:'Cinzel',serif;margin-bottom:2px">Git Push</div>
+        <div style="font-size:11px;color:#7C6F52" id="push-sub">本日 0/5 回</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12px;color:#9B7E4A;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+10XP</div>
+        <button class="btn btn-primary" id="push-btn" style="padding:6px 14px;font-size:12px" onclick="logPush()">記録</button>
+      </div>
+    </div>
+    <div class="techitem" style="background:none;border:none;padding:0">
+      <div class="techicon" style="background:#C4A35A22;border:1px solid #C4A35A44">🏆</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-family:'Cinzel',serif;margin-bottom:2px">機能完成</div>
+        <div style="font-size:11px;color:#7C6F52">一つの機能・制作物を完成させた</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:12px;color:#C4A35A;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+100XP</div>
+        <button class="btn btn-gold" style="padding:6px 14px;font-size:12px" onclick="logFeature()">記録</button>
+      </div>
     </div>
   </div>
-  <div class="actitem" id="dig-groom-card">
-    <div class="actrow-top">
-      <div><div style="font-size:26px;margin-bottom:4px">👔</div><div style="font-size:14px;font-family:'Cinzel',serif">身だしなみ改善</div><div style="font-size:11px;color:#7C6F52;margin-top:2px">服装・髪型・爪などを整えた</div></div>
-      <div style="text-align:right"><div style="font-size:14px;color:#9B7E4A;margin-bottom:8px;font-family:'JetBrains Mono',monospace">+10XP</div><button class="btn btn-primary" id="dig-groom-btn" style="padding:8px 16px" onclick="logDignity('groom',10)">記録</button></div>
+
+  <!-- DIGNITY -->
+  <div class="card">
+    <div class="cardtitle">✨ Dignity</div>
+    <div id="dig-skin-card" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #2A3545">
+      <div><div style="font-size:20px;margin-bottom:2px">💧</div><div style="font-size:14px;font-family:'Cinzel',serif">スキンケア</div><div style="font-size:11px;color:#7C6F52;margin-top:2px">洗顔・保湿など</div></div>
+      <div style="text-align:right"><div style="font-size:13px;color:#9B7E4A;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+2XP</div><button class="btn btn-primary" id="dig-skin-btn" style="padding:6px 14px;font-size:12px" onclick="logDignity('skin',2)">記録</button></div>
+    </div>
+    <div id="dig-clean-card" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #2A3545">
+      <div><div style="font-size:20px;margin-bottom:2px">🧹</div><div style="font-size:14px;font-family:'Cinzel',serif">部屋掃除</div><div style="font-size:11px;color:#7C6F52;margin-top:2px">掃除・片付けなど</div></div>
+      <div style="text-align:right"><div style="font-size:13px;color:#9B7E4A;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+5XP</div><button class="btn btn-primary" id="dig-clean-btn" style="padding:6px 14px;font-size:12px" onclick="logDignity('clean',5)">記録</button></div>
+    </div>
+    <div id="dig-groom-card" style="display:flex;justify-content:space-between;align-items:center;padding:12px 0">
+      <div><div style="font-size:20px;margin-bottom:2px">👔</div><div style="font-size:14px;font-family:'Cinzel',serif">身だしなみ改善</div><div style="font-size:11px;color:#7C6F52;margin-top:2px">服装・髪型など</div></div>
+      <div style="text-align:right"><div style="font-size:13px;color:#9B7E4A;margin-bottom:6px;font-family:'JetBrains Mono',monospace">+10XP</div><button class="btn btn-primary" id="dig-groom-btn" style="padding:6px 14px;font-size:12px" onclick="logDignity('groom',10)">記録</button></div>
+    </div>
+    <div id="dig-all-done" style="display:none;margin-top:12px;padding:10px;background:rgba(155,126,74,.06);border:1px solid #9B7E4A66;border-radius:8px;text-align:center">
+      <span style="font-family:'Cinzel',serif;color:#9B7E4A">✨ 本日の品格を全て達成</span>
     </div>
   </div>
-  <div id="dig-all-done" style="display:none">
-    <div class="card" style="border-color:#9B7E4A66;text-align:center;background:rgba(155,126,74,.06)">
-      <div style="font-size:28px;margin-bottom:8px">✨</div>
-      <div style="font-family:'Cinzel',serif;color:#9B7E4A">本日の品格を全て達成</div>
-    </div>
-  </div>
+
 </div>
 
 <!-- NEWS -->
@@ -560,6 +518,7 @@ const DEFAULT = {
   dayLog:{},
   news:[],
   papers:[],
+  tomorrow:{text:'',date:null},
   lastDaily:null,
 };
 
@@ -578,14 +537,14 @@ function todayKey(){
 
 function pushDayLog(key, entry){
   const dk = todayKey();
-  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[], news:[], papers:[] };
+  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[], news:[], papers:[], tomorrow:[] };
   if(!S.dayLog[dk][key]) S.dayLog[dk][key] = [];
   S.dayLog[dk][key].push(entry);
 }
 
 function addDayXP(amount){
   const dk = todayKey();
-  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[], news:[], papers:[] };
+  if(!S.dayLog[dk]) S.dayLog[dk] = { xpGained:0, books:[], thoughts:[], empathy:[], dignity:[], tech:[], news:[], papers:[], tomorrow:[] };
   S.dayLog[dk].xpGained = (S.dayLog[dk].xpGained||0) + amount;
 }
 
@@ -601,6 +560,7 @@ function dailyReset(){
     S.dignity = {skin:false, clean:false, groom:false, lastDate:today};
     S.techLog = {...S.techLog, pushCount:0, lastPushDate:today};
     S._dailyBonusToday = null;
+    S.tomorrow = { text: S.tomorrow?.text || '', date: null }; // 前日の予定はそのまま表示
     localStorage.setItem('gsj_v1', JSON.stringify(S)); // Supabase同期はしない
     scheduleSyncToSupabase(); // isLoadingがfalseの時だけ動く
   }
@@ -701,7 +661,7 @@ function refreshUI(){
   });
   document.getElementById('dig-all-done').style.display=(sameDig&&S.dignity.skin&&S.dignity.clean&&S.dignity.groom)?'block':'none';
 
-  renderBooks(); renderThoughtLog(); refreshThoughtSelect(); renderGrandSage(); renderTitleTable(); renderNewsLog(); renderPaperLog();
+  renderBooks(); renderThoughtLog(); refreshThoughtSelect(); renderGrandSage(); renderTitleTable(); renderNewsLog(); renderPaperLog(); renderTomorrow();
 }
 
 function updateEmpathyUI(key,count,max){
@@ -835,6 +795,40 @@ function renderThoughtLog(){
       <div style="font-size:13px;color:#F0E6C0;line-height:1.5">${escHtml(t.sum.slice(0,60))}${t.sum.length>60?'…':''}</div>
     </div>`).join('')
   }</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOMORROW
+// ═══════════════════════════════════════════════════════════
+function submitTomorrow(){
+  const text = document.getElementById('tomorrow-text').value.trim();
+  if(!text) return;
+  const today = todayKey();
+  S.tomorrow = { text, date: today };
+  S.dailyProgress.think = true;
+  pushDayLog('tomorrow', { text });
+  save(); gainXP(5); checkDaily();
+  renderTomorrow();
+}
+
+function renderTomorrow(){
+  const today = todayKey();
+  const t = S.tomorrow;
+  const doneEl = document.getElementById('tomorrow-done');
+  const dispEl = document.getElementById('tomorrow-display');
+  const inp = document.getElementById('tomorrow-text');
+  if(!doneEl || !dispEl) return;
+  if(t && t.date === today && t.text){
+    doneEl.style.display = 'block';
+    dispEl.textContent = t.text;
+    inp.value = '';
+    inp.disabled = true;
+    inp.style.opacity = '0.4';
+  } else {
+    doneEl.style.display = 'none';
+    inp.disabled = false;
+    inp.style.opacity = '1';
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1061,6 +1055,15 @@ function renderCalDetail(){
     html+=`</div>`;
   }
 
+  // 明日の予定
+  if(log.tomorrow&&log.tomorrow.length){
+    html+=`<div class="detail-section"><div class="detail-section-label">🌅 明日の予定</div>`;
+    log.tomorrow.forEach(t=>{
+      html+=`<div class="detail-item">${escHtml(t.text)}</div>`;
+    });
+    html+=`</div>`;
+  }
+
   html+=`</div>`;
   el.innerHTML=html;
 }
@@ -1259,7 +1262,7 @@ function renderTitleTable(){
 // ═══════════════════════════════════════════════════════════
 // NAV
 // ═══════════════════════════════════════════════════════════
-const TAB_KEYS=['home','books','thought','tech','empathy','dignity','news','calendar','grand'];
+const TAB_KEYS=['home','books','thought','empathy','news','daily','calendar','grand'];
 
 function switchTab(key){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
