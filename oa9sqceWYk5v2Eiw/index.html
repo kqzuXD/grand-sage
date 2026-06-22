@@ -167,7 +167,7 @@ select{appearance:none;-webkit-appearance:none}
 </div>
 
 <div id="topbar">
-  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.4</div></div>
+  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.5</div></div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
     <div id="sync-indicator"><div class="sync-dot" id="sync-dot"></div><span id="sync-text"></span></div>
     <div class="lvbadge" id="topbadge">Lv 1 · 0 XP</div>
@@ -444,6 +444,18 @@ select{appearance:none;-webkit-appearance:none}
     <div id="dig-all-done" style="display:none;margin-top:12px;padding:10px;background:rgba(155,126,74,.06);border:1px solid #9B7E4A66;border-radius:8px;text-align:center">
       <span style="font-family:'Cinzel',serif;color:#9B7E4A">✨ 本日の品格を全て達成</span>
     </div>
+  </div>
+
+  <!-- BACKUP -->
+  <div class="card">
+    <div class="cardtitle">💾 データ管理</div>
+    <div style="font-size:12px;color:#7C6F52;margin-bottom:12px;line-height:1.6">全データをファイルに書き出し・復元できます。万一に備えて定期的にバックアップを推奨。</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-secondary" style="flex:1;min-width:120px" onclick="exportData()">⬇ エクスポート</button>
+      <button class="btn btn-secondary" style="flex:1;min-width:120px" onclick="document.getElementById('import-file').click()">⬆ インポート</button>
+    </div>
+    <input type="file" id="import-file" accept="application/json" style="display:none" onchange="importData(event)">
+    <div id="backup-msg" style="font-size:12px;margin-top:10px;text-align:center;min-height:16px"></div>
   </div>
 
 </div>
@@ -1326,6 +1338,62 @@ function switchTab(key){
   if(key==='grand'){ renderGrandSage(); renderTitleTable(); }
 }
 function goTab(key){ switchTab(key); }
+
+// ═══════════════════════════════════════════════════════════
+// BACKUP（エクスポート/インポート）
+// ═══════════════════════════════════════════════════════════
+function exportData(){
+  try {
+    const dataStr = JSON.stringify(S, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const date = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `gsj-backup-${date}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showBackupMsg('✓ エクスポートしました', '#4A7C6F');
+  } catch(e){
+    console.error('export error', e);
+    showBackupMsg('エクスポートに失敗しました', '#8B4A4A');
+  }
+}
+
+function importData(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  if(!confirm('現在のデータを上書きします。よろしいですか？\n（事前にエクスポートを推奨）')){
+    event.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if(typeof imported !== 'object' || imported === null) throw new Error('invalid');
+      S = { ...DEFAULT, ...imported };
+      save();
+      refreshUI();
+      showBackupMsg('✓ インポートしました', '#4A7C6F');
+    } catch(err){
+      console.error('import error', err);
+      showBackupMsg('ファイルが不正です', '#8B4A4A');
+    }
+    event.target.value = '';
+  };
+  reader.readAsText(file);
+}
+
+function showBackupMsg(msg, color){
+  const el = document.getElementById('backup-msg');
+  if(!el) return;
+  el.textContent = msg;
+  el.style.color = color;
+  setTimeout(() => { el.textContent = ''; }, 3000);
+}
 
 // ═══════════════════════════════════════════════════════════
 // UTIL
