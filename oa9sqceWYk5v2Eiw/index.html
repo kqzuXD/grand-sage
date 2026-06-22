@@ -167,7 +167,7 @@ select{appearance:none;-webkit-appearance:none}
 </div>
 
 <div id="topbar">
-  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.5</div></div>
+  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.6</div></div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
     <div id="sync-indicator"><div class="sync-dot" id="sync-dot"></div><span id="sync-text"></span></div>
     <div class="lvbadge" id="topbadge">Lv 1 · 0 XP</div>
@@ -237,6 +237,13 @@ select{appearance:none;-webkit-appearance:none}
     <div class="statcard"><div style="font-size:20px;margin-bottom:4px">📚</div><div class="statnum" id="h-books">0冊</div><div class="statlabel">読了冊数</div></div>
     <div class="statcard"><div style="font-size:20px;margin-bottom:4px">💭</div><div class="statnum" id="h-thoughts">0件</div><div class="statlabel">考察数</div></div>
     <div class="statcard"><div style="font-size:20px;margin-bottom:4px">🔨</div><div class="statnum" id="h-works">0件</div><div class="statlabel">制作物</div></div>
+  </div>
+
+  <!-- XP GRAPH -->
+  <div class="card">
+    <div class="cardtitle">📊 XP獲得履歴（直近14日）</div>
+    <div id="xp-graph" style="display:flex;align-items:flex-end;justify-content:space-between;height:120px;gap:3px;padding-top:8px"></div>
+    <div id="xp-graph-labels" style="display:flex;justify-content:space-between;gap:3px;margin-top:6px"></div>
   </div>
 </div>
 
@@ -582,6 +589,7 @@ const DEFAULT = {
   news:[],
   papers:[],
   tomorrow:{text:'',date:null},
+  achievements:[],
   lastDaily:null,
 };
 
@@ -655,8 +663,50 @@ function checkDaily(){
   const dp=S.dailyProgress;
   if(dp.read && dp.think && dp.dev && !S._dailyBonusToday){
     S._dailyBonusToday=new Date().toDateString();
+    updateStreak();
     gainXP(50);
   }
+}
+
+function updateStreak(){
+  const today = todayKey();
+  if(!S.streak) S.streak = { count:0, lastDate:null };
+  if(S.streak.lastDate === today) return; // 既に今日カウント済み
+  // 昨日の日付を計算
+  const y = new Date();
+  y.setDate(y.getDate() - 1);
+  const yesterday = `${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,'0')}-${String(y.getDate()).padStart(2,'0')}`;
+  if(S.streak.lastDate === yesterday){
+    S.streak.count++; // 連続
+  } else {
+    S.streak.count = 1; // リセットして1から
+  }
+  S.streak.lastDate = today;
+  // 連続達成ボーナス
+  if(S.streak.count === 3)  setTimeout(()=>{ gainXP(30);  showStreakBonus(3, 30); }, 300);
+  if(S.streak.count === 7)  setTimeout(()=>{ gainXP(100); showStreakBonus(7, 100); }, 300);
+  if(S.streak.count === 30){
+    if(!S.achievements) S.achievements = [];
+    if(!S.achievements.includes('continuer')) S.achievements.push('continuer');
+    setTimeout(()=>{ showStreakBonus(30, 0); }, 300);
+  }
+}
+
+function showStreakBonus(days, xp){
+  const el = document.getElementById('backup-msg');
+  // レベルアップオーバーレイを流用して連続達成を祝う
+  document.getElementById('lvnum').textContent = days;
+  document.getElementById('lvtitle').innerHTML = days === 30
+    ? '🔥 30日連続達成！称号「継続者」獲得'
+    : `🔥 ${days}日連続達成！ +${xp}XP`;
+  const lvlabel = document.querySelector('#lvoverlay .lvbox > div:first-child');
+  if(lvlabel) lvlabel.textContent = 'STREAK';
+  const ov = document.getElementById('lvoverlay');
+  ov.classList.add('show');
+  setTimeout(()=>{
+    ov.classList.remove('show');
+    if(lvlabel) lvlabel.textContent = 'LEVEL UP';
+  }, 2800);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -680,7 +730,12 @@ function refreshUI(){
   document.getElementById('h-books').textContent=booksRead+'冊';
   document.getElementById('h-thoughts').textContent=thoughtCount+'件';
   document.getElementById('h-works').textContent=workCount+'件';
-  if(streak.count>0){ const el=document.getElementById('h-streak'); el.textContent=`🔥 ${streak.count}日連続`; el.style.display='block'; }
+  if(streak && streak.count>0){
+    const el=document.getElementById('h-streak');
+    const hasContinuer = S.achievements && S.achievements.includes('continuer');
+    el.innerHTML = `🔥 ${streak.count}日連続` + (hasContinuer ? ' <span style="color:#C4A35A">👑継続者</span>' : '');
+    el.style.display='block';
+  }
 
   // Daily quests
   [{key:'read',id:'dq-read',cid:'dqc-read'},{key:'think',id:'dq-think',cid:'dqc-think'},{key:'dev',id:'dq-dev',cid:'dqc-dev'}].forEach(q=>{
@@ -724,7 +779,7 @@ function refreshUI(){
   });
   document.getElementById('dig-all-done').style.display=(sameDig&&S.dignity.skin&&S.dignity.clean&&S.dignity.groom)?'block':'none';
 
-  renderBooks(); renderThoughtLog(); refreshThoughtSelect(); renderGrandSage(); renderTitleTable(); renderNewsLog(); renderPaperLog(); renderTomorrow();
+  renderBooks(); renderThoughtLog(); refreshThoughtSelect(); renderGrandSage(); renderTitleTable(); renderNewsLog(); renderPaperLog(); renderTomorrow(); renderXPGraph();
 }
 
 function updateEmpathyUI(key,count,max){
@@ -1338,6 +1393,43 @@ function switchTab(key){
   if(key==='grand'){ renderGrandSage(); renderTitleTable(); }
 }
 function goTab(key){ switchTab(key); }
+
+// ═══════════════════════════════════════════════════════════
+// XP GRAPH
+// ═══════════════════════════════════════════════════════════
+function renderXPGraph(){
+  const graphEl = document.getElementById('xp-graph');
+  const labelEl = document.getElementById('xp-graph-labels');
+  if(!graphEl) return;
+
+  // 直近14日分の日付配列
+  const days = [];
+  for(let i=13; i>=0; i--){
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const xp = (S.dayLog[key] && S.dayLog[key].xpGained) || 0;
+    days.push({ key, xp, day: d.getDate(), dow: d.getDay() });
+  }
+
+  const maxXP = Math.max(...days.map(d=>d.xp), 1);
+  const todayK = todayKey();
+
+  graphEl.innerHTML = days.map(d=>{
+    const h = d.xp > 0 ? Math.max(4, (d.xp/maxXP)*100) : 2;
+    const isToday = d.key === todayK;
+    const color = d.xp === 0 ? '#2A3545' : isToday ? '#C4A35A' : '#4A7C6F';
+    return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%">
+      ${d.xp>0?`<div style="font-size:8px;color:#7C6F52;margin-bottom:2px;font-family:'JetBrains Mono',monospace">${d.xp}</div>`:''}
+      <div title="${d.key}: ${d.xp}XP" style="width:100%;max-width:18px;height:${h}%;background:${color};border-radius:3px 3px 0 0;transition:height .4s ease;${isToday?'box-shadow:0 0 8px rgba(196,163,90,.5)':''}"></div>
+    </div>`;
+  }).join('');
+
+  labelEl.innerHTML = days.map(d=>{
+    const isToday = d.key === todayK;
+    return `<div style="flex:1;text-align:center;font-size:8px;color:${isToday?'#C4A35A':'#7C6F52'};font-family:'JetBrains Mono',monospace;max-width:18px;margin:0 auto">${d.day}</div>`;
+  }).join('');
+}
 
 // ═══════════════════════════════════════════════════════════
 // BACKUP（エクスポート/インポート）
