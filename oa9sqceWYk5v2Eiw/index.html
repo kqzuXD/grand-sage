@@ -167,7 +167,7 @@ select{appearance:none;-webkit-appearance:none}
 </div>
 
 <div id="topbar">
-  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.7</div></div>
+  <div style="flex-shrink:0;display:flex;align-items:baseline;gap:8px"><div class="logo">✦ GSJ</div><div style="font-size:10px;color:#2A3545;font-family:'JetBrains Mono',monospace">v2.8</div></div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
     <div id="sync-indicator"><div class="sync-dot" id="sync-dot"></div><span id="sync-text"></span></div>
     <div class="lvbadge" id="topbadge">Lv 1 · 0 XP</div>
@@ -808,7 +808,12 @@ function addBook(){
 function renderBooks(){
   const el=document.getElementById('book-list');
   if(S.books.length===0){ el.innerHTML='<div class="empty"><div class="emptyi">📚</div><div class="emptytext">まだ本が登録されていない</div></div>'; return; }
-  el.innerHTML=S.books.map(b=>{
+  // 読書中を上、読了を下に並べる（各グループ内は登録が新しい順）
+  const sorted = [...S.books].sort((a,b)=>{
+    if(a.done !== b.done) return a.done ? 1 : -1;
+    return b.id - a.id;
+  });
+  el.innerHTML=sorted.map(b=>{
     const pct=Math.round((b.currentPage/b.totalPages)*100);
     const cat=BOOK_CATS[b.cat]||BOOK_CATS.novel;
     return `<div class="bookcard${b.done?' done':''}">
